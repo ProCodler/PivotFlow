@@ -12,7 +12,7 @@
         "src/PivotFlow_frontend/dist"
       ],
       "type": "assets",
-      "workspace": "PivotFlow_frontend"
+      "build": "cd src/PivotFlow_frontend && npm install --legacy-peer-deps && npm run build"
     }
   },
   "defaults": {
