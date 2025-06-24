@@ -2,17 +2,6 @@ import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 import type { IDL } from '@dfinity/candid';
 
-export interface ActivityItem {
-  'id' : string,
-  'activityType' : ActivityType,
-  'userId' : Principal,
-  'blockchain' : [] | [string],
-  'message' : string,
-  'timestamp' : Time,
-}
-export type ActivityType = { 'gas_alert' : null } |
-  { 'nft_alert' : null } |
-  { 'portfolio_update' : null };
 export type AlertType = { 'rise_above' : null } |
   { 'any_change' : null } |
   { 'drop_below' : null };
@@ -60,34 +49,19 @@ export interface User {
   'isOperator' : boolean,
   'lastLogin' : Time,
 }
-export interface WalletAddress {
-  'id' : string,
-  'owner' : Principal,
-  'name' : [] | [string],
-  'createdAt' : Time,
-  'blockchain' : string,
-  'address' : string,
-}
 export interface _SERVICE {
-  'addWalletAddress' : ActorMethod<
-    [string, string, [] | [string]],
-    WalletAddress
-  >,
   'createGasAlert' : ActorMethod<[string, bigint, PriorityTier], GasAlert>,
   'createNFTAlert' : ActorMethod<
-    [string, string, number, string, AlertType, [] | [bigint], [] | [number]],
+    [string, string, AlertType, number, string],
     NFTAlert
   >,
-  'getCycles' : ActorMethod<[], bigint>,
+  'createUser' : ActorMethod<[string], User>,
   'getNetworkFees' : ActorMethod<[], Array<NetworkFee>>,
   'getUser' : ActorMethod<[], [] | [User]>,
-  'getUserActivities' : ActorMethod<[], Array<ActivityItem>>,
   'getUserGasAlerts' : ActorMethod<[], Array<GasAlert>>,
   'getUserNFTAlerts' : ActorMethod<[], Array<NFTAlert>>,
-  'getUserWallets' : ActorMethod<[], Array<WalletAddress>>,
-  'register' : ActorMethod<[], User>,
-  'updateNetworkFees' : ActorMethod<
-    [string, string, FeeInfo, FeeInfo, FeeInfo],
+  'updateNetworkFee' : ActorMethod<
+    [string, FeeInfo, FeeInfo, FeeInfo],
     NetworkFee
   >,
 }

@@ -1,12 +1,3 @@
-type WalletAddress = 
- record {
-   address: text;
-   blockchain: text;
-   createdAt: Time;
-   id: text;
-   name: opt text;
-   owner: Principal;
- };
 type User = 
  record {
    createdAt: Time;
@@ -68,37 +59,16 @@ type AlertType =
    drop_below;
    rise_above;
  };
-type ActivityType = 
- variant {
-   gas_alert;
-   nft_alert;
-   portfolio_update;
- };
-type ActivityItem = 
- record {
-   activityType: ActivityType;
-   blockchain: opt text;
-   id: text;
-   message: text;
-   timestamp: Time;
-   userId: Principal;
- };
 service : {
-  addWalletAddress: (address: text, blockchain: text, name: opt text) ->
-   (WalletAddress);
   createGasAlert: (blockchain: text, maxGwei: nat, priorityTier:
    PriorityTier) -> (GasAlert);
-  createNFTAlert: (collectionSlug: text, collectionName: text, targetPrice:
-   float64, currency: text, alertType: AlertType, gasLimit: opt nat,
-   percentageChange: opt float64) -> (NFTAlert);
-  getCycles: () -> (nat);
+  createNFTAlert: (collectionSlug: text, collectionName: text, alertType:
+   AlertType, targetPrice: float64, currency: text) -> (NFTAlert);
+  createUser: (_username: text) -> (User);
   getNetworkFees: () -> (vec NetworkFee) query;
   getUser: () -> (opt User);
-  getUserActivities: () -> (vec ActivityItem);
   getUserGasAlerts: () -> (vec GasAlert);
   getUserNFTAlerts: () -> (vec NFTAlert);
-  getUserWallets: () -> (vec WalletAddress);
-  register: () -> (User);
-  updateNetworkFees: (blockchain: text, icon: text, fast: FeeInfo, standard:
-   FeeInfo, slow: FeeInfo) -> (NetworkFee);
+  updateNetworkFee: (blockchain: text, fast: FeeInfo, standard: FeeInfo,
+   slow: FeeInfo) -> (NetworkFee);
 }

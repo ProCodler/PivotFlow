@@ -1,59 +1,172 @@
-# `PivotFlow`
+# PivotFlow
 
-Welcome to your new `PivotFlow` project and to the Internet Computer development community. By default, creating a new project adds this README and some template files to your project directory. You can edit these template files to customize your project and to include your own code to speed up the development cycle.
+## Revolutionizing Digital Asset Management on the Internet Computer
 
-To get started, you might want to explore the project directory structure and the default configuration file. Working with this project in your development environment will not affect any production deployment or identity tokens.
+PivotFlow is a next-generation platform designed to empower users, investors, and organizations to seamlessly manage, monitor, and optimize their digital asset portfolios on the Internet Computer (IC). Built with a modern tech stack and a focus on usability, security, and actionable insights, PivotFlow bridges the gap between blockchain complexity and user-friendly portfolio management.
 
-To learn more before you start working with `PivotFlow`, see the following documentation available online:
+---
 
-- [Quick Start](https://internetcomputer.org/docs/current/developer-docs/setup/deploy-locally)
-- [SDK Developer Tools](https://internetcomputer.org/docs/current/developer-docs/setup/install)
-- [Motoko Programming Language Guide](https://internetcomputer.org/docs/current/motoko/main/motoko)
-- [Motoko Language Quick Reference](https://internetcomputer.org/docs/current/motoko/main/language-manual)
+## 🚀 Why PivotFlow?
 
-If you want to start working on your project right away, you might want to try the following commands:
+- **Unified Dashboard:** View all your IC assets, NFTs, and canister activity in one place.
+- **Real-Time Analytics:** Get up-to-date blockchain fees, portfolio performance, and market trends.
+- **NFT Alerts:** Never miss an opportunity—set custom alerts for NFT events and price changes.
+- **Seamless Integration:** Connect with IC wallets and canisters effortlessly.
+- **Open & Extensible:** Built for developers and power users to extend and integrate.
+
+---
+
+## ✨ Key Features
+
+- **Portfolio Overview:** Visualize your holdings, allocations, and performance over time.
+- **Live Market Data:** Real-time cryptocurrency prices from CoinGecko API integration.
+- **Gas Price Monitoring:** Track Ethereum, Polygon, BNB Chain, and Solana transaction costs.
+- **NFT Floor Price Tracking:** Monitor OpenSea collection floor prices with custom alerts.
+- **Blockchain Fee Tracker:** Optimize transaction timing with live gas price data.
+- **NFT Alerts & Watchlists:** Stay ahead with customizable notifications for price changes.
+- **User Profiles:** Personalize your experience and manage multiple accounts with Internet Identity.
+- **Settings & Customization:** Tailor the platform to your workflow.
+- **Admin Dashboard:** Canister metrics and cycle management for operators.
+- **Real-time Updates:** Live data synchronization with external APIs every 60 seconds.
+
+---
+
+## 🏗️ Architecture & Tech Stack
+
+- **Frontend:** React 18, TypeScript, Vite, TailwindCSS
+- **Backend:** Motoko canisters on the Internet Computer
+- **State Management:** React Context API with custom data service layer
+- **UI Components:** Custom shadcn/ui-inspired components with modern design
+- **IC Integration:** @dfinity/agent, @dfinity/auth-client for Internet Identity
+- **Live Data APIs:** 
+  - CoinGecko API for cryptocurrency prices
+  - OpenSea API for NFT collection data
+  - Multiple gas tracking APIs (EthGasStation, GasNow, Polygon Gas Station)
+- **Real-time Updates:** Automated data synchronization with caching layer
+- **Development Tools:** dfx, TypeScript declarations generation, automated setup
+
+---
+
+## ⚡ Quick Start
+
+### Prerequisites
+- Node.js (v18+ recommended)
+- npm or yarn
+- [DFX SDK](https://internetcomputer.org/docs/current/developer-docs/setup/install) (v0.15.0+)
+
+### Automated Setup
+
+The fastest way to get started is using our setup script:
 
 ```bash
-cd PivotFlow/
-dfx help
-dfx canister --help
+# Clone the repo
+git clone https://github.com/your-org/PivotFlow.git
+cd PivotFlow
+
+# Run the automated setup script
+./setup.sh
 ```
 
-## Running the project locally
+This script will:
+- Install all dependencies
+- Start the local IC replica
+- Deploy Internet Identity
+- Deploy PivotFlow canisters
+- Generate TypeScript declarations
+- Set up environment variables
+- Provide access URLs
 
-If you want to test your project locally, you can use the following commands:
+### Manual Setup
+
+If you prefer to set up manually:
 
 ```bash
-# Starts the replica, running in the background
+# Install dependencies
+npm install
+
+# Start the IC replica (in a separate terminal)
 dfx start --background
 
-# Deploys your canisters to the replica and generates your candid interface
+# Deploy Internet Identity
+dfx deploy internet_identity
+
+# Deploy PivotFlow canisters
 dfx deploy
+
+# Generate TypeScript declarations
+dfx generate
+
+# Start the frontend development server
+npm run dev
 ```
 
-Once the job completes, your application will be available at `http://localhost:4943?canisterId={asset_canister_id}`.
+### Development URLs
+- **Frontend Dev Server**: http://localhost:3000
+- **Frontend Canister**: http://localhost:4943/?canisterId={frontend-canister-id}
+- **IC Local Replica**: http://localhost:4943
 
-If you have made changes to your backend canister, you can generate a new candid interface with
+### Live Data Integration
+
+For full functionality with live market data, add API keys to `.env.local`:
 
 ```bash
-npm run generate
+# API Keys for live data
+VITE_OPENSEA_API_KEY=your_opensea_api_key
+VITE_COINGECKO_API_KEY=your_coingecko_api_key
+VITE_ETHERSCAN_API_KEY=your_etherscan_api_key
 ```
 
-at any time. This is recommended before starting the frontend development server, and will be run automatically any time you run `dfx deploy`.
-
-If you are making frontend changes, you can start a development server with
+### Available Scripts
 
 ```bash
-npm start
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run setup        # Run automated setup
+npm run deploy       # Deploy canisters
+npm run generate     # Generate TypeScript declarations
+npm run canister:start    # Start dfx in background
+npm run canister:stop     # Stop dfx
+npm run canister:logs     # View backend logs
 ```
 
-Which will start a server at `http://localhost:8080`, proxying API requests to the replica at port 4943.
+---
 
-### Note on frontend environment variables
+## 🖥️ Usage & Screenshots
 
-If you are hosting frontend code somewhere without using DFX, you may need to make one of the following adjustments to ensure your project does not fetch the root key in production:
+> _Add screenshots or GIFs here to showcase the dashboard, NFT alerts, and analytics._
 
-- set`DFX_NETWORK` to `ic` if you are using Webpack
-- use your own preferred method to replace `process.env.DFX_NETWORK` in the autogenerated declarations
-  - Setting `canisters -> {asset_canister_id} -> declarations -> env_override to a string` in `dfx.json` will replace `process.env.DFX_NETWORK` with the string in the autogenerated declarations
-- Write your own `createActor` constructor
+---
+
+## 🧩 Project Structure
+
+- `src/` — Main frontend source code
+  - `components/` — UI components (Button, Card, Tabs, etc.)
+  - `pages/` — Main app pages (Dashboard, Portfolio, NFT Alerts, etc.)
+  - `contexts/` — React context providers (Auth, App, ICP)
+  - `lib/` — Utility functions and IC integration
+- `PivotFlow_backend/` — Motoko canister code
+- `PivotFlow_frontend/` — Frontend app (if using monorepo structure)
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please open issues, submit pull requests, or suggest features. See `CONTRIBUTING.md` for guidelines.
+
+---
+
+## 📄 License
+
+MIT License. See `LICENSE` for details.
+
+---
+
+## 📣 Contact & Pitch
+
+PivotFlow is the all-in-one solution for digital asset management on the Internet Computer. Whether you're an individual investor, NFT collector, or organization, PivotFlow gives you the tools to make smarter decisions, faster.
+
+- **Contact:** [your.email@domain.com](mailto:your.email@domain.com)
+- **Website:** [https://pivotflow.app](https://pivotflow.app)
+- **Demo:** _Available upon request_
+
+> _Ready to unlock the full potential of your digital assets? Try PivotFlow today!_
