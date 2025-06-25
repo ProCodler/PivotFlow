@@ -29,7 +29,7 @@ module Types {
     
     public type ActivityType = {
         #nft_alert;
-        #gas_alert;
+        #cycles_alert;
         #portfolio_update;
     };
     
@@ -50,12 +50,12 @@ module Types {
         createdAt: Time;
     };
     
-    // Gas Alert
-    public type GasAlert = {
+    // Cycles Alert
+    public type CyclesAlert = {
         id: Text;
         userId: Principal;
-        blockchain: Text;
-        maxGwei: Nat;
+        operationType: Text; // e.g., "Canister Call", "HTTP Request", "Storage Update"
+        maxCyclesCost: Nat; // maximum cycles cost threshold
         priorityTier: PriorityTier;
         isActive: Bool;
         createdAt: Time;
@@ -81,18 +81,18 @@ module Types {
         timestamp: Time;
     };
     
-    // Network Fee structures
-    public type FeeInfo = {
-        gwei: Float;
-        usd: Float;
+    // Network Fee structures for ICP Chain Fusion operations
+    public type CyclesCostInfo = {
+        cycles: Float; // Cost in cycles
+        usd: Float;    // Equivalent cost in USD
     };
     
     public type NetworkFee = {
-        blockchain: Text;
+        operationType: Text; // e.g., "Canister Call", "HTTP Request", "Storage Update"
         icon: Text;
-        fast: FeeInfo;
-        standard: FeeInfo;
-        slow: FeeInfo;
+        fast: CyclesCostInfo;
+        standard: CyclesCostInfo;
+        slow: CyclesCostInfo;
         lastUpdated: Time;
     };
     

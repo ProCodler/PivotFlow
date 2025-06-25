@@ -21,12 +21,12 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [authState, setAuthState] = useState<AuthState>({
-    isAuthenticated: false,
+    isAuthenticated: true, // Demo mode: default to authenticated
     identity: null,
-    principal: null,
+    principal: 'demo-principal',
     authClient: null,
   });
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // Demo mode: no loading
 
   useEffect(() => {
     checkAuthStatus();

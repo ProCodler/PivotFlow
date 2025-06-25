@@ -1,0 +1,27 @@
+# Motoko build artifacts
+*.wasm
+*.wasm.gz
+*.did
+*.did.js
+*.did.d.ts
+
+# Vessel package manager
+.vessel/
+package-set.dhall
+
+# Mops package manager
+.mops/
+mops.toml.lock
+
+# Development and debugging
+*.log
+*.tmp
+.mo-ide/
+
+# Editor files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db

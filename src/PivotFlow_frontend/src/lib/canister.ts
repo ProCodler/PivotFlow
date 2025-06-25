@@ -7,7 +7,7 @@ import {
   _SERVICE,
   idlFactory,
   canisterId as defaultCanisterId 
-} from '../declarations/PivotFlow_backend';
+} from '../../../declarations/PivotFlow_backend';
 
 // Types for our application
 export interface CanisterService extends _SERVICE {}
@@ -61,15 +61,10 @@ export class CanisterClient {
     return this.agent;
   }
 
-  // Convenience methods for common operations
-  public async whoami(): Promise<Principal> {
+  // User management
+  public async createUser(username: string) {
     if (!this.actor) throw new Error('Actor not initialized');
-    return await this.actor.whoami();
-  }
-
-  public async registerUser() {
-    if (!this.actor) throw new Error('Actor not initialized');
-    return await this.actor.registerUser();
+    return await this.actor.createUser(username);
   }
 
   public async getUser() {
@@ -77,99 +72,58 @@ export class CanisterClient {
     return await this.actor.getUser();
   }
 
-  public async getUserNftAlerts() {
+  // NFT Alerts
+  public async getUserNFTAlerts() {
     if (!this.actor) throw new Error('Actor not initialized');
-    return await this.actor.getUserNftAlerts();
+    return await this.actor.getUserNFTAlerts();
   }
 
-  public async addNftAlert(
+  public async createNFTAlert(
     collectionSlug: string,
     collectionName: string,
-    targetPrice: number,
-    currency: string,
     alertType: { drop_below: null } | { rise_above: null } | { any_change: null },
-    gasLimit?: bigint,
-    percentageChange?: number
+    targetPrice: number,
+    currency: string
   ) {
     if (!this.actor) throw new Error('Actor not initialized');
-    return await this.actor.addNftAlert(
+    return await this.actor.createNFTAlert(
       collectionSlug,
       collectionName,
-      targetPrice,
-      currency,
       alertType,
-      gasLimit ? [gasLimit] : [],
-      percentageChange ? [percentageChange] : []
+      targetPrice,
+      currency
     );
   }
 
-  public async removeNftAlert(alertId: string) {
+  // Cycles Alerts
+  public async getUserCyclesAlerts() {
     if (!this.actor) throw new Error('Actor not initialized');
-    return await this.actor.removeNftAlert(alertId);
+    return await this.actor.getUserCyclesAlerts();
   }
 
-  public async getUserGasAlerts() {
-    if (!this.actor) throw new Error('Actor not initialized');
-    return await this.actor.getUserGasAlerts();
-  }
-
-  public async addGasAlert(
-    blockchain: string,
-    maxGwei: bigint,
+  public async createCyclesAlert(
+    operationType: string,
+    maxCyclesCost: number,
     priorityTier: { fast: null } | { standard: null } | { slow: null }
   ) {
     if (!this.actor) throw new Error('Actor not initialized');
-    return await this.actor.addGasAlert(blockchain, maxGwei, priorityTier);
+    return await this.actor.createCyclesAlert(operationType, BigInt(maxCyclesCost), priorityTier);
   }
 
-  public async removeGasAlert(alertId: string) {
-    if (!this.actor) throw new Error('Actor not initialized');
-    return await this.actor.removeGasAlert(alertId);
-  }
-
-  public async getUserWalletAddresses() {
-    if (!this.actor) throw new Error('Actor not initialized');
-    return await this.actor.getUserWalletAddresses();
-  }
-
-  public async addWalletAddress(address: string, blockchain: string, label?: string) {
-    if (!this.actor) throw new Error('Actor not initialized');
-    return await this.actor.addWalletAddress(address, blockchain, label ? [label] : []);
-  }
-
-  public async removeWalletAddress(walletId: string) {
-    if (!this.actor) throw new Error('Actor not initialized');
-    return await this.actor.removeWalletAddress(walletId);
-  }
-
-  public async getUserActivity(limit?: bigint) {
-    if (!this.actor) throw new Error('Actor not initialized');
-    return await this.actor.getUserActivity(limit ? [limit] : []);
-  }
-
-  public async getUserSettings() {
-    if (!this.actor) throw new Error('Actor not initialized');
-    return await this.actor.getUserSettings();
-  }
-
-  public async updateSettings(settings: any) {
-    if (!this.actor) throw new Error('Actor not initialized');
-    return await this.actor.updateSettings(settings);
-  }
-
+  // Network Fees
   public async getNetworkFees() {
     if (!this.actor) throw new Error('Actor not initialized');
     return await this.actor.getNetworkFees();
   }
 
-  public async getCycles() {
+  public async updateNetworkFee(
+    operationType: string,
+    fast: { cycles: number; usd: number },
+    standard: { cycles: number; usd: number },
+    slow: { cycles: number; usd: number }
+  ) {
     if (!this.actor) throw new Error('Actor not initialized');
-    return await this.actor.getCycles();
-  }
-
-  public async health() {
-    if (!this.actor) throw new Error('Actor not initialized');
-    return await this.actor.health();
+    return await this.actor.updateNetworkFee(operationType, fast, standard, slow);
   }
 }
 
