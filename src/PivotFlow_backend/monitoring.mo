@@ -57,50 +57,50 @@ module Monitoring {
             let notifications = Buffer.Buffer<NotificationPayload>(10);
             
             for (alert in alerts.vals()) {
-                if (not alert.isActive) continue;
-                
-                switch (getCurrentFloorPrice(alert.collectionSlug)) {
-                    case (?currentPrice) {
-                        let shouldTrigger = switch (alert.alertType) {
-                            case (#drop_below) { currentPrice <= alert.targetPrice };
-                            case (#rise_above) { currentPrice >= alert.targetPrice };
-                            case (#any_change) {
-                                switch (alert.percentageChange) {
-                                    case (?threshold) {
-                                        let change = Utils.calculatePercentageChange(alert.currentFloorPrice, currentPrice);
-                                        Float.abs(change) >= threshold
-                                    };
-                                    case null { false };
-                                }
-                            };
-                        };
-                        
-                        if (shouldTrigger) {
-                            let message = switch (alert.alertType) {
-                                case (#drop_below) {
-                                    alert.collectionName # " floor dropped to " # Float.toText(currentPrice) # " " # alert.currency
-                                };
-                                case (#rise_above) {
-                                    alert.collectionName # " floor rose to " # Float.toText(currentPrice) # " " # alert.currency
-                                };
+                if (alert.isActive) {
+                    switch (getCurrentFloorPrice(alert.collectionSlug)) {
+                        case (?currentPrice) {
+                            let shouldTrigger = switch (alert.alertType) {
+                                case (#drop_below) { currentPrice <= alert.targetPrice };
+                                case (#rise_above) { currentPrice >= alert.targetPrice };
                                 case (#any_change) {
-                                    let change = Utils.calculatePercentageChange(alert.currentFloorPrice, currentPrice);
-                                    alert.collectionName # " floor changed by " # Float.toText(change) # "% to " # Float.toText(currentPrice) # " " # alert.currency
+                                    switch (alert.percentageChange) {
+                                        case (?threshold) {
+                                            let change = Utils.calculatePercentageChange(alert.currentFloorPrice, currentPrice);
+                                            Float.abs(change) >= threshold
+                                        };
+                                        case null { false };
+                                    }
                                 };
                             };
                             
-                            notifications.add({
-                                userId = alert.userId;
-                                title = "NFT Price Alert";
-                                message = message;
-                                alertType = #nft_alert;
-                                blockchain = null;
-                                timestamp = Time.now();
-                            });
+                            if (shouldTrigger) {
+                                let message = switch (alert.alertType) {
+                                    case (#drop_below) {
+                                        alert.collectionName # " floor dropped to " # Float.toText(currentPrice) # " " # alert.currency
+                                    };
+                                    case (#rise_above) {
+                                        alert.collectionName # " floor rose to " # Float.toText(currentPrice) # " " # alert.currency
+                                    };
+                                    case (#any_change) {
+                                        let change = Utils.calculatePercentageChange(alert.currentFloorPrice, currentPrice);
+                                        alert.collectionName # " floor changed by " # Float.toText(change) # "% to " # Float.toText(currentPrice) # " " # alert.currency
+                                    };
+                                };
+                                
+                                notifications.add({
+                                    userId = alert.userId;
+                                    title = "NFT Price Alert";
+                                    message = message;
+                                    alertType = #nft_alert;
+                                    blockchain = null;
+                                    timestamp = Time.now();
+                                });
+                            };
                         };
-                    };
-                    case null {
-                        Debug.print("No price data for collection: " # alert.collectionSlug);
+                        case null {
+                            Debug.print("No price data for collection: " # alert.collectionSlug);
+                        };
                     };
                 };
             };
@@ -116,37 +116,37 @@ module Monitoring {
             let notifications = Buffer.Buffer<NotificationPayload>(10);
             
             for (alert in alerts.vals()) {
-                if (not alert.isActive) continue;
-                
-                // Find matching network fee
-                switch (Array.find<NetworkFee>(networkFees, func(fee) { fee.blockchain == alert.blockchain })) {
-                    case (?networkFee) {
-                        let currentGwei = switch (alert.priorityTier) {
-                            case (#fast) { networkFee.fast.gwei };
-                            case (#standard) { networkFee.standard.gwei };
-                            case (#slow) { networkFee.slow.gwei };
-                        };
-                        
-                        if (currentGwei <= Float.fromInt(alert.maxGwei)) {
-                            let message = alert.blockchain # " gas (" # 
-                                (switch (alert.priorityTier) {
-                                    case (#fast) { "Fast" };
-                                    case (#standard) { "Standard" };
-                                    case (#slow) { "Slow" };
-                                }) # ") dropped to " # Float.toText(currentGwei) # " Gwei";
+                if (alert.isActive) {
+                    // Find matching network fee
+                    switch (Array.find<NetworkFee>(networkFees, func(fee) { fee.blockchain == alert.blockchain })) {
+                        case (?networkFee) {
+                            let currentGwei = switch (alert.priorityTier) {
+                                case (#fast) { networkFee.fast.gwei };
+                                case (#standard) { networkFee.standard.gwei };
+                                case (#slow) { networkFee.slow.gwei };
+                            };
                             
-                            notifications.add({
-                                userId = alert.userId;
-                                title = "Gas Price Alert";
-                                message = message;
-                                alertType = #gas_alert;
-                                blockchain = ?alert.blockchain;
-                                timestamp = Time.now();
-                            });
+                            if (currentGwei <= Float.fromInt(alert.maxGwei)) {
+                                let message = alert.blockchain # " gas (" # 
+                                    (switch (alert.priorityTier) {
+                                        case (#fast) { "Fast" };
+                                        case (#standard) { "Standard" };
+                                        case (#slow) { "Slow" };
+                                    }) # ") dropped to " # Float.toText(currentGwei) # " Gwei";
+                                
+                                notifications.add({
+                                    userId = alert.userId;
+                                    title = "Gas Price Alert";
+                                    message = message;
+                                    alertType = #gas_alert;
+                                    blockchain = ?alert.blockchain;
+                                    timestamp = Time.now();
+                                });
+                            };
                         };
-                    };
-                    case null {
-                        Debug.print("No network fee data for blockchain: " # alert.blockchain);
+                        case null {
+                            Debug.print("No network fee data for blockchain: " # alert.blockchain);
+                        };
                     };
                 };
             };
@@ -215,12 +215,19 @@ module Monitoring {
     
     // Main monitoring coordinator
     public class MonitoringCoordinator() {
-        private let priceMonitor = PriceMonitor();
-        private let gasMonitor = GasMonitor();
-        private let notificationService = NotificationService();
+        private var priceMonitor : ?PriceMonitor = null;
+        private var gasMonitor : ?GasMonitor = null;
+        private var notificationService : ?NotificationService = null;
         
         public func init() {
-            priceMonitor.init();
+            priceMonitor := ?PriceMonitor();
+            gasMonitor := ?GasMonitor();
+            notificationService := ?NotificationService();
+            
+            switch (priceMonitor) {
+                case (?pm) { pm.init() };
+                case null { };
+            };
         };
         
         public func runMonitoringCycle(
@@ -232,23 +239,28 @@ module Monitoring {
             gasNotifications: [NotificationPayload];
             updatedNetworkFees: [NetworkFee];
         } {
+            // Get initialized instances
+            let pm = switch (priceMonitor) { case (?p) p; case null return { nftNotifications = []; gasNotifications = []; updatedNetworkFees = networkFees; }; };
+            let gm = switch (gasMonitor) { case (?g) g; case null return { nftNotifications = []; gasNotifications = []; updatedNetworkFees = networkFees; }; };
+            let ns = switch (notificationService) { case (?n) n; case null return { nftNotifications = []; gasNotifications = []; updatedNetworkFees = networkFees; }; };
+            
             // Simulate price changes
-            priceMonitor.simulatePriceChanges();
+            pm.simulatePriceChanges();
             
             // Check NFT alerts
-            let nftNotifications = priceMonitor.checkNftAlerts(nftAlerts);
+            let nftNotifications = pm.checkNftAlerts(nftAlerts);
             
             // Simulate gas price changes and check gas alerts
-            let updatedNetworkFees = gasMonitor.simulateGasPriceChanges(networkFees);
-            let gasNotifications = gasMonitor.checkGasAlerts(gasAlerts, updatedNetworkFees);
+            let updatedNetworkFees = gm.simulateGasPriceChanges(networkFees);
+            let gasNotifications = gm.checkGasAlerts(gasAlerts, updatedNetworkFees);
             
             // Send notifications (in production)
             if (nftNotifications.size() > 0) {
-                let _ = await notificationService.sendBulkNotifications(nftNotifications);
+                let _ = await ns.sendBulkNotifications(nftNotifications);
             };
             
             if (gasNotifications.size() > 0) {
-                let _ = await notificationService.sendBulkNotifications(gasNotifications);
+                let _ = await ns.sendBulkNotifications(gasNotifications);
             };
             
             {
@@ -259,7 +271,10 @@ module Monitoring {
         };
         
         public func getCurrentFloorPrice(collectionSlug: Text) : ?Float {
-            priceMonitor.getCurrentFloorPrice(collectionSlug)
+            switch (priceMonitor) {
+                case (?pm) { pm.getCurrentFloorPrice(collectionSlug) };
+                case null { null };
+            }
         };
     };
 }

@@ -96,6 +96,23 @@ module Types {
         lastUpdated: Time;
     };
     
+    // OpenSea Collection data
+    public type OpenSeaCollection = {
+        slug: Text;
+        name: Text;
+        floorPrice: ?Float;
+        currency: Text;
+    };
+    
+    // Cached token price data
+    public type CachedTokenPrice = {
+        id: Text; // e.g., "bitcoin", "ethereum"
+        symbol: Text; // e.g., "BTC", "ETH"
+        name: Text; // e.g., "Bitcoin", "Ethereum"
+        priceUsd: Float;
+        timestamp: Time;
+    };
+    
     // NFT Item
     public type NFTItem = {
         id: Text;
@@ -147,13 +164,6 @@ module Types {
     };
     
     // External API types for future integration
-    public type OpenSeaCollection = {
-        slug: Text;
-        name: Text;
-        floorPrice: ?Float;
-        currency: Text;
-    };
-    
     public type GasPrice = {
         blockchain: Text;
         fast: Float;

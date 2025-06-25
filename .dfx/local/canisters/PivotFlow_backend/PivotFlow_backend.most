@@ -1,14 +1,4 @@
 // Version: 1.0.0
-type ActivityItem__906133181 =
-  {
-    activityType : ActivityType__590573572;
-    blockchain : ?Text;
-    id : Text;
-    message : Text;
-    timestamp : Time__576531430;
-    userId : Principal__73904461
-  };
-type ActivityType__590573572 = {#gas_alert; #nft_alert; #portfolio_update};
 type AlertType__890995768 = {#any_change; #drop_below; #rise_above};
 type FeeInfo__250214618 = {gwei : Float; usd : Float};
 type GasAlert__852848304 =
@@ -58,20 +48,10 @@ type User__751052727 =
     lastLogin : Time__576531430;
     principal : Principal__73904461
   };
-type WalletAddress__259206279 =
-  {
-    address : Text;
-    blockchain : Text;
-    createdAt : Time__576531430;
-    id : Text;
-    name : ?Text;
-    owner : Principal__73904461
-  };
 actor {
-  stable var activities : [(Text, ActivityItem__906133181)];
   stable var gasAlerts : [(Text, GasAlert__852848304)];
+  stable var isInitialized : Bool;
   stable var networkFees : [(Text, NetworkFee__136693869)];
   stable var nftAlerts : [(Text, NFTAlert__619773434)];
-  stable var users : [(Principal, User__751052727)];
-  stable var walletAddresses : [(Text, WalletAddress__259206279)]
+  stable var users : [(Principal, User__751052727)]
 };
