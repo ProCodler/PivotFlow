@@ -9,13 +9,13 @@ import Types "types";
 actor PivotFlow {
     private stable var users : [(Principal, Types.User)] = [];
     private stable var nftAlerts : [(Text, Types.NFTAlert)] = [];
-    private stable var gasAlerts : [(Text, Types.GasAlert)] = [];
+    private stable var cyclesAlerts : [(Text, Types.CyclesAlert)] = [];
     private stable var networkFees : [(Text, Types.NetworkFee)] = [];
     private stable var isInitialized : Bool = false;
 
     private var userStore = HashMap.HashMap<Principal, Types.User>(10, Principal.equal, Principal.hash);
     private var nftAlertStore = HashMap.HashMap<Text, Types.NFTAlert>(10, Text.equal, Text.hash);
-    private var gasAlertStore = HashMap.HashMap<Text, Types.GasAlert>(10, Text.equal, Text.hash);
+    private var cyclesAlertStore = HashMap.HashMap<Text, Types.CyclesAlert>(10, Text.equal, Text.hash);
     private var networkFeeStore = HashMap.HashMap<Text, Types.NetworkFee>(10, Text.equal, Text.hash);
 
     // Initialize stores from stable memory
@@ -26,8 +26,8 @@ actor PivotFlow {
         for ((k, v) in nftAlerts.vals()) {
             nftAlertStore.put(k, v);
         };
-        for ((k, v) in gasAlerts.vals()) {
-            gasAlertStore.put(k, v);
+        for ((k, v) in cyclesAlerts.vals()) {
+            cyclesAlertStore.put(k, v);
         };
         for ((k, v) in networkFees.vals()) {
             networkFeeStore.put(k, v);
@@ -38,17 +38,37 @@ actor PivotFlow {
     private func initializeDefaultData() {
         initStores();
         
-        // Initialize with some default network fees
-        let ethFee : Types.NetworkFee = {
-            blockchain = "Ethereum";
-            icon = "eth-icon";
-            fast = { gwei = 50.0; usd = 12.5 };
-            standard = { gwei = 30.0; usd = 7.5 };
-            slow = { gwei = 20.0; usd = 5.0 };
+        // Initialize with some default ICP Chain Fusion operation costs
+        let canisterCallFee : Types.NetworkFee = {
+            operationType = "Canister Call";
+            icon = "canister-icon";
+            fast = { cycles = 1000000.0; usd = 0.001 };
+            standard = { cycles = 500000.0; usd = 0.0005 };
+            slow = { cycles = 250000.0; usd = 0.00025 };
             lastUpdated = Time.now();
         };
         
-        networkFeeStore.put("ethereum", ethFee);
+        let httpRequestFee : Types.NetworkFee = {
+            operationType = "HTTP Outcall";
+            icon = "http-icon";
+            fast = { cycles = 5000000.0; usd = 0.005 };
+            standard = { cycles = 3000000.0; usd = 0.003 };
+            slow = { cycles = 1500000.0; usd = 0.0015 };
+            lastUpdated = Time.now();
+        };
+        
+        let storageUpdateFee : Types.NetworkFee = {
+            operationType = "Storage Update";
+            icon = "storage-icon";
+            fast = { cycles = 2000000.0; usd = 0.002 };
+            standard = { cycles = 1000000.0; usd = 0.001 };
+            slow = { cycles = 500000.0; usd = 0.0005 };
+            lastUpdated = Time.now();
+        };
+        
+        networkFeeStore.put("canister-call", canisterCallFee);
+        networkFeeStore.put("http-outcall", httpRequestFee);
+        networkFeeStore.put("storage-update", storageUpdateFee);
     };
 
     // User management
@@ -74,21 +94,21 @@ actor PivotFlow {
     };
 
     public shared(_msg) func updateNetworkFee(
-        blockchain: Text,
-        fast: Types.FeeInfo,
-        standard: Types.FeeInfo,
-        slow: Types.FeeInfo
+        operationType: Text,
+        fast: Types.CyclesCostInfo,
+        standard: Types.CyclesCostInfo,
+        slow: Types.CyclesCostInfo
     ) : async Types.NetworkFee {
         let fee : Types.NetworkFee = {
-            blockchain;
-            icon = blockchain # "-icon";
+            operationType;
+            icon = operationType # "-icon";
             fast;
             standard;
             slow;
             lastUpdated = Time.now();
         };
         
-        networkFeeStore.put(Text.toLowercase(blockchain), fee);
+        networkFeeStore.put(Text.toLowercase(operationType), fee);
         fee
     };
 
@@ -129,40 +149,51 @@ actor PivotFlow {
         )
     };
 
-    // Gas Alerts
-    public shared(msg) func createGasAlert(
-        blockchain: Text,
-        maxGwei: Nat,
+    // Cycles Alerts
+    public shared(msg) func createCyclesAlert(
+        operationType: Text,
+        maxCyclesCost: Nat,
         priorityTier: Types.PriorityTier
-    ) : async Types.GasAlert {
-        let id = Text.concat(Principal.toText(msg.caller), blockchain);
-        let alert : Types.GasAlert = {
+    ) : async Types.CyclesAlert {
+        let id = Text.concat(Principal.toText(msg.caller), operationType);
+        let alert : Types.CyclesAlert = {
             id;
             userId = msg.caller;
-            blockchain;
-            maxGwei;
+            operationType;
+            maxCyclesCost;
             priorityTier;
             isActive = true;
             createdAt = Time.now();
         };
         
-        gasAlertStore.put(id, alert);
+        cyclesAlertStore.put(id, alert);
         alert
     };
 
-    public shared(msg) func getUserGasAlerts() : async [Types.GasAlert] {
-        let allAlerts = Iter.toArray(gasAlertStore.entries());
-        Array.mapFilter<(Text, Types.GasAlert), Types.GasAlert>(
+    public shared(msg) func getUserCyclesAlerts() : async [Types.CyclesAlert] {
+        let allAlerts = Iter.toArray(cyclesAlertStore.entries());
+        Array.mapFilter<(Text, Types.CyclesAlert), Types.CyclesAlert>(
             allAlerts,
             func((_, alert)) = if (alert.userId == msg.caller) ?alert else null
         )
+    };
+
+    // Manual initialization for testing
+    public func initialize() : async Text {
+        if (not isInitialized) {
+            initializeDefaultData();
+            isInitialized := true;
+            "Initialized successfully"
+        } else {
+            "Already initialized"
+        }
     };
 
     // System upgrade functions
     system func preupgrade() {
         users := Iter.toArray(userStore.entries());
         nftAlerts := Iter.toArray(nftAlertStore.entries());
-        gasAlerts := Iter.toArray(gasAlertStore.entries());
+        cyclesAlerts := Iter.toArray(cyclesAlertStore.entries());
         networkFees := Iter.toArray(networkFeeStore.entries());
     };    
 

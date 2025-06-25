@@ -10,7 +10,9 @@ export const DashboardPage: React.FC = () => {
     recentActivity, 
     canisterCycles, 
     isOperator, 
-    isLoading 
+    isLoading,
+    setCurrentView,
+    refreshPortfolio 
   } = useAppContext();
 
   const activeNftAlerts = nftAlerts.filter(alert => alert.isActive);
@@ -44,7 +46,7 @@ export const DashboardPage: React.FC = () => {
         <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
           Mission Control
         </h1>
-        <p className="text-slate-400">Monitor your NFT alerts and blockchain fees from orbit</p>
+        <p className="text-slate-400">Monitor your NFT alerts and cycles costs from the Internet Computer</p>
       </div>
 
       {/* Summary Cards */}
@@ -68,7 +70,7 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Active Gas Alerts */}
+        {/* Active Cycles Alerts */}
         <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 shadow-2xl">
           <div className="flex items-center justify-between mb-4">
             <div className="p-3 bg-purple-500/20 rounded-xl">
@@ -76,7 +78,7 @@ export const DashboardPage: React.FC = () => {
             </div>
             <div className="text-right">
               <p className="text-2xl font-bold text-white">{activeGasAlerts.length}</p>
-              <p className="text-sm text-slate-400">Gas Alerts</p>
+              <p className="text-sm text-slate-400">Cycles Alerts</p>
             </div>
           </div>
           <div className="w-full bg-slate-700/50 rounded-full h-2">
@@ -87,20 +89,20 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Portfolio Value */}
+        {/* Portfolio Status */}
         <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 shadow-2xl">
           <div className="flex items-center justify-between mb-4">
             <div className="p-3 bg-green-500/20 rounded-xl">
               <TrendingUp className="w-6 h-6 text-green-400" />
             </div>
             <div className="text-right">
-              <p className="text-2xl font-bold text-white">12.4</p>
-              <p className="text-sm text-slate-400">ETH Value</p>
+              <p className="text-2xl font-bold text-white">--</p>
+              <p className="text-sm text-slate-400">Portfolio</p>
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <p className="text-sm text-green-400">+2.3% (24h)</p>
+            <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+            <p className="text-sm text-blue-400">Monitoring Active</p>
           </div>
         </div>
 
@@ -151,11 +153,13 @@ export const DashboardPage: React.FC = () => {
                 <div className="flex items-center space-x-3">
                   <div className={`p-2 rounded-lg ${
                     activity.type === 'nft_alert' ? 'bg-cyan-500/20 text-cyan-400' :
-                    activity.type === 'gas_alert' ? 'bg-purple-500/20 text-purple-400' :
+                    activity.type === 'cycles_alert' ? 'bg-purple-500/20 text-purple-400' :
+                    activity.type === 'chain_fusion' ? 'bg-orange-500/20 text-orange-400' :
                     'bg-green-500/20 text-green-400'
                   }`}>
                     {activity.type === 'nft_alert' && <Bell size={16} />}
-                    {activity.type === 'gas_alert' && <Zap size={16} />}
+                    {activity.type === 'cycles_alert' && <Zap size={16} />}
+                    {activity.type === 'chain_fusion' && <Zap size={16} />}
                     {activity.type === 'portfolio_update' && <Wallet size={16} />}
                   </div>
                   <div>
@@ -185,7 +189,7 @@ export const DashboardPage: React.FC = () => {
               <span className="text-green-400">Operational</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-400">Gas Tracker</span>
+              <span className="text-slate-400">Cycles Tracker</span>
               <span className="text-green-400">Operational</span>
             </div>
             <div className="flex justify-between">
@@ -198,13 +202,23 @@ export const DashboardPage: React.FC = () => {
         <div className="bg-gradient-to-br from-slate-800/30 to-slate-900/30 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 shadow-2xl">
           <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
           <div className="space-y-3">
-            <button className="w-full text-left p-3 bg-slate-700/50 hover:bg-slate-700/70 rounded-xl transition-all duration-300 text-slate-300 hover:text-white">
+            <button 
+              onClick={() => setCurrentView('nft-alerts')}
+              className="w-full text-left p-3 bg-slate-700/50 hover:bg-slate-700/70 rounded-xl transition-all duration-300 text-slate-300 hover:text-white"
+            >
               Create NFT Alert
             </button>
-            <button className="w-full text-left p-3 bg-slate-700/50 hover:bg-slate-700/70 rounded-xl transition-all duration-300 text-slate-300 hover:text-white">
-              Set Gas Alert
+            <button 
+              onClick={() => setCurrentView('blockchain-fees')}
+              className="w-full text-left p-3 bg-slate-700/50 hover:bg-slate-700/70 rounded-xl transition-all duration-300 text-slate-300 hover:text-white"
+            >
+              Set Cycles Alert
             </button>
-            <button className="w-full text-left p-3 bg-slate-700/50 hover:bg-slate-700/70 rounded-xl transition-all duration-300 text-slate-300 hover:text-white">
+            <button 
+              onClick={() => refreshPortfolio()}
+              disabled={isLoading}
+              className="w-full text-left p-3 bg-slate-700/50 hover:bg-slate-700/70 rounded-xl transition-all duration-300 text-slate-300 hover:text-white disabled:opacity-50"
+            >
               Refresh Portfolio
             </button>
           </div>
