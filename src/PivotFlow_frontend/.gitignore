@@ -41,6 +41,17 @@ coverage
 .env.development.local
 .env.test.local
 .env.production.local
+.env.dfx
+.env.ic
+
+# ICP/DFX specific
+.dfx/
+canister_ids.json
+declarations/
+*.wasm
+*.did
+*.did.js
+*.did.d.ts
 
 # TypeScript
 *.tsbuildinfo

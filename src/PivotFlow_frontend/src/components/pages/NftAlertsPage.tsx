@@ -4,7 +4,7 @@ import { LoadingSpinner } from '../LoadingSpinner';
 import { Plus, Bell, Edit, Trash2, Eye, TrendingUp, TrendingDown, Activity } from 'lucide-react';
 
 export const NftAlertsPage: React.FC = () => {
-  const { nftAlerts, addNftAlert, removeNftAlert, updateNftAlert, isLoading } = useAppContext();
+  const { nftAlerts, addNftAlert, removeNftAlert, isLoading } = useAppContext();
   const [showAddForm, setShowAddForm] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -29,7 +29,7 @@ export const NftAlertsPage: React.FC = () => {
       alertType: formData.alertType,
       gasLimit: formData.gasLimit ? parseInt(formData.gasLimit) : undefined,
       percentageChange: formData.percentageChange ? parseFloat(formData.percentageChange) : undefined,
-      currentFloorPrice: parseFloat(formData.targetPrice) + (Math.random() - 0.5) * 5, // Mock current price
+      currentFloorPrice: 0, // Will be updated by backend
     });
 
     setFormData({
