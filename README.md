@@ -19,10 +19,11 @@ PivotFlow is a next-generation platform designed to empower users, investors, an
 ## ✨ Key Features
 
 - **Portfolio Overview:** Visualize your holdings, allocations, and performance over time.
-- **Live Market Data:** Real-time cryptocurrency prices from CoinGecko API integration.
-- **Gas Price Monitoring:** Track Ethereum, Polygon, BNB Chain, and Solana transaction costs.
+- **Live Market Data:** Real-time ICP and cryptocurrency prices with cross-chain insights.
+- **ICP Chain Fusion:** Native integration with Bitcoin and Ethereum through Internet Computer's Chain Fusion technology.
+- **Cycles Monitoring:** Track ICP cycles consumption and optimize canister costs.
 - **NFT Floor Price Tracking:** Monitor OpenSea collection floor prices with custom alerts.
-- **Blockchain Fee Tracker:** Optimize transaction timing with live gas price data.
+- **Cross-chain Fee Tracker:** Optimize transaction timing with live costs for ICP, Bitcoin (Chain Fusion), and Ethereum (Chain Fusion).
 - **NFT Alerts & Watchlists:** Stay ahead with customizable notifications for price changes.
 - **User Profiles:** Personalize your experience and manage multiple accounts with Internet Identity.
 - **Settings & Customization:** Tailor the platform to your workflow.
@@ -38,10 +39,12 @@ PivotFlow is a next-generation platform designed to empower users, investors, an
 - **State Management:** React Context API with custom data service layer
 - **UI Components:** Custom shadcn/ui-inspired components with modern design
 - **IC Integration:** @dfinity/agent, @dfinity/auth-client for Internet Identity
+- **Chain Fusion Integration:** Native ICP support with Bitcoin and Ethereum integration
 - **Live Data APIs:** 
+  - ICP price feeds and cycles monitoring
   - CoinGecko API for cryptocurrency prices
   - OpenSea API for NFT collection data
-  - Multiple gas tracking APIs (EthGasStation, GasNow, Polygon Gas Station)
+  - Chain Fusion cost tracking for cross-chain operations
 - **Real-time Updates:** Automated data synchronization with caching layer
 - **Development Tools:** dfx, TypeScript declarations generation, automated setup
 

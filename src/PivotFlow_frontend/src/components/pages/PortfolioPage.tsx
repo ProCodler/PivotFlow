@@ -16,7 +16,7 @@ export const PortfolioPage: React.FC = () => {
   const [showAddWalletForm, setShowAddWalletForm] = useState(false);
   const [walletForm, setWalletForm] = useState({
     address: '',
-    blockchain: 'Ethereum',
+    blockchain: 'Internet Computer',
     label: '',
   });
 
@@ -32,7 +32,7 @@ export const PortfolioPage: React.FC = () => {
 
     setWalletForm({
       address: '',
-      blockchain: 'Ethereum',
+      blockchain: 'Internet Computer',
       label: '',
     });
     setShowAddWalletForm(false);
@@ -47,10 +47,15 @@ export const PortfolioPage: React.FC = () => {
   };
 
   const blockchainIcons: { [key: string]: string } = {
+    'Internet Computer': '∞',
+    'ICP': '∞',
+    'Bitcoin (via Chain Fusion)': '₿',
+    'Ethereum (via Chain Fusion)': '⟠',
     'Ethereum': '⟠',
     'Polygon': '⬢',
     'BNB Chain': '●',
     'Solana': '◈',
+    'Bitcoin': '₿',
   };
 
   return (
@@ -151,6 +156,9 @@ export const PortfolioPage: React.FC = () => {
                 onChange={(e) => setWalletForm({ ...walletForm, blockchain: e.target.value })}
                 className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300"
               >
+                <option value="Internet Computer">Internet Computer (ICP)</option>
+                <option value="Bitcoin (via Chain Fusion)">Bitcoin (via Chain Fusion)</option>
+                <option value="Ethereum (via Chain Fusion)">Ethereum (via Chain Fusion)</option>
                 <option value="Ethereum">Ethereum</option>
                 <option value="Polygon">Polygon</option>
                 <option value="BNB Chain">BNB Chain</option>
