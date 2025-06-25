@@ -25,6 +25,8 @@ canister_ids.json
 .env.dfx
 .env.ic
 .env.replica
+.env.local
+.env.delete
 networks.json
 dfx-orbit.json
 
