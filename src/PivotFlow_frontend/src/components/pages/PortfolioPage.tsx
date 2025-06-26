@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
 import { LoadingSpinner, LoadingSkeleton } from '../LoadingSpinner';
+import { PortfolioAnalytics } from '../PortfolioAnalytics';
 import { Plus, Wallet, ExternalLink, RefreshCw, Trash2, Eye } from 'lucide-react';
 
 export const PortfolioPage: React.FC = () => {
-  const { 
-    walletAddresses, 
-    nftPortfolio, 
-    addWalletAddress, 
-    removeWalletAddress, 
-    refreshPortfolio, 
-    isLoading 
+  const {
+    walletAddresses,
+    nftPortfolio,
+    addWalletAddress,
+    removeWalletAddress,
+    refreshPortfolio,
+    isLoading
   } = useAppContext();
 
   const [showAddWalletForm, setShowAddWalletForm] = useState(false);
@@ -68,6 +69,9 @@ export const PortfolioPage: React.FC = () => {
         <p className="text-slate-400">Manage your cross-chain NFT collection</p>
       </div>
 
+      {/* Portfolio Analytics */}
+      <PortfolioAnalytics />
+
       {/* Portfolio Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 shadow-2xl">
@@ -116,7 +120,7 @@ export const PortfolioPage: React.FC = () => {
           <Plus size={20} />
           <span>Add Wallet</span>
         </button>
-        
+
         <button
           onClick={() => refreshPortfolio()}
           disabled={isLoading}
@@ -131,7 +135,7 @@ export const PortfolioPage: React.FC = () => {
       {showAddWalletForm && (
         <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 shadow-2xl">
           <h2 className="text-xl font-semibold text-white mb-6">Add Wallet Address</h2>
-          
+
           <form onSubmit={handleWalletSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-slate-300 mb-2">
@@ -162,6 +166,7 @@ export const PortfolioPage: React.FC = () => {
                 <option value="Ethereum">Ethereum</option>
                 <option value="Polygon">Polygon</option>
                 <option value="BNB Chain">BNB Chain</option>
+                <option value="ICP">BNB</option>
                 <option value="Solana">Solana</option>
               </select>
             </div>
@@ -259,7 +264,7 @@ export const PortfolioPage: React.FC = () => {
             <div className="text-6xl mb-4">🖼️</div>
             <p className="text-slate-400 mb-2">No NFTs found</p>
             <p className="text-sm text-slate-500">
-              {walletAddresses.length === 0 
+              {walletAddresses.length === 0
                 ? "Add a wallet address to view your NFTs"
                 : "Refresh your portfolio or add more wallets"
               }
@@ -279,11 +284,11 @@ export const PortfolioPage: React.FC = () => {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <h3 className="text-white font-semibold truncate">{nft.collectionName}</h3>
                   <p className="text-slate-400 text-sm">{nft.tokenId}</p>
-                  
+
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-xs text-slate-500">Floor Price</p>

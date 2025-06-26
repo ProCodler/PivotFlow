@@ -11,10 +11,10 @@ export const SettingsPage: React.FC = () => {
 
   const handleSave = async (section: 'apiKeys' | 'notifications' | 'ui') => {
     setIsSaving(true);
-    
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     updateSettings({ [section]: localSettings[section] });
     setSavedMessage(`${section === 'apiKeys' ? 'API Keys' : section === 'notifications' ? 'Notifications' : 'UI Settings'} saved successfully!`);
     setTimeout(() => setSavedMessage(''), 3000);
@@ -46,19 +46,18 @@ export const SettingsPage: React.FC = () => {
 
       {/* Tab Navigation */}
       <div className="bg-gradient-to-br from-slate-800/30 to-slate-900/30 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-2 shadow-2xl">
-        <div className="flex space-x-2">
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
           {tabs.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
               onClick={() => setActiveTab(id)}
-              className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
-                activeTab === id
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
-              }`}
+              className={`flex items-center justify-center sm:justify-start space-x-2 px-4 sm:px-6 py-3 rounded-xl font-medium transition-all duration-300 min-h-[52px] touch-manipulation ${activeTab === id
+                  ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg transform scale-[0.98]'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-700/50 active:bg-slate-700/70 active:scale-[0.96]'
+                }`}
             >
               <Icon size={20} />
-              <span>{label}</span>
+              <span className="text-sm sm:text-base font-medium">{label}</span>
             </button>
           ))}
         </div>
@@ -66,8 +65,8 @@ export const SettingsPage: React.FC = () => {
 
       {/* API Keys Tab */}
       {activeTab === 'api-keys' && (
-        <div className="bg-gradient-to-br from-slate-800/30 to-slate-900/30 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 shadow-2xl">
-          <div className="flex items-center justify-between mb-6">
+        <div className="bg-gradient-to-br from-slate-800/30 to-slate-900/30 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-4 sm:p-6 shadow-2xl">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-3 sm:space-y-0">
             <h2 className="text-xl font-semibold text-white flex items-center">
               <Key className="w-5 h-5 mr-2 text-cyan-400" />
               API Keys Management
@@ -92,6 +91,7 @@ export const SettingsPage: React.FC = () => {
               </div>
             </div>
 
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
@@ -104,6 +104,17 @@ export const SettingsPage: React.FC = () => {
                     ...localSettings,
                     apiKeys: { ...localSettings.apiKeys, icpExplorer: e.target.value }
                   })}
+<<<<<<< feat/pivotflow-frontend-init
+                  placeholder="Your OpenSea API key"
+                  className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300 text-base"
+                />
+                <p className="text-xs text-slate-500">For NFT collection data</p>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-slate-300">
+                  Etherscan API Key
+=======
                   placeholder="Your IC Explorer API key"
                   className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300"
                 />
@@ -113,6 +124,7 @@ export const SettingsPage: React.FC = () => {
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
                   NFT Marketplace API Key
+>>>>>>> main
                 </label>
                 <input
                   type="password"
@@ -121,6 +133,7 @@ export const SettingsPage: React.FC = () => {
                     ...localSettings,
                     apiKeys: { ...localSettings.apiKeys, nftMarketplace: e.target.value }
                   })}
+
                   placeholder="Your OpenSea/NFT marketplace API key"
                   className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300"
                 />
@@ -130,6 +143,7 @@ export const SettingsPage: React.FC = () => {
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
                   Bitcoin Explorer API Key
+
                 </label>
                 <input
                   type="password"
@@ -138,6 +152,7 @@ export const SettingsPage: React.FC = () => {
                     ...localSettings,
                     apiKeys: { ...localSettings.apiKeys, btcExplorer: e.target.value }
                   })}
+
                   placeholder="Your Bitcoin explorer API key"
                   className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300"
                 />
@@ -147,6 +162,7 @@ export const SettingsPage: React.FC = () => {
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
                   Ethereum Explorer API Key
+
                 </label>
                 <input
                   type="password"
@@ -155,6 +171,7 @@ export const SettingsPage: React.FC = () => {
                     ...localSettings,
                     apiKeys: { ...localSettings.apiKeys, ethExplorer: e.target.value }
                   })}
+
                   placeholder="Your Etherscan API key"
                   className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300"
                 />
@@ -172,18 +189,20 @@ export const SettingsPage: React.FC = () => {
                     ...localSettings,
                     apiKeys: { ...localSettings.apiKeys, priceOracle: e.target.value }
                   })}
+
                   placeholder="Your CoinGecko or price feed API key"
                   className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300"
                 />
                 <p className="text-xs text-slate-500 mt-1">For real-time price data</p>
+
               </div>
             </div>
 
-            <div className="flex justify-end">
+            <div className="flex justify-center sm:justify-end pt-4">
               <button
                 onClick={() => handleSave('apiKeys')}
                 disabled={isSaving}
-                className="flex items-center space-x-2 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 disabled:opacity-50"
+                className="flex items-center space-x-2 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 active:scale-95 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 disabled:opacity-50 touch-manipulation min-h-[48px] w-full sm:w-auto"
               >
                 <Save size={20} />
                 <span>{isSaving ? 'Saving...' : 'Save API Keys'}</span>
@@ -195,16 +214,16 @@ export const SettingsPage: React.FC = () => {
 
       {/* Notifications Tab */}
       {activeTab === 'notifications' && (
-        <div className="bg-gradient-to-br from-slate-800/30 to-slate-900/30 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 shadow-2xl">
+        <div className="bg-gradient-to-br from-slate-800/30 to-slate-900/30 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-4 sm:p-6 shadow-2xl">
           <h2 className="text-xl font-semibold text-white mb-6 flex items-center">
             <Bell className="w-5 h-5 mr-2 text-purple-400" />
             Notification Settings
           </h2>
 
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-slate-300">
                   Telegram Bot Token
                 </label>
                 <input
@@ -215,12 +234,12 @@ export const SettingsPage: React.FC = () => {
                     notifications: { ...localSettings.notifications, telegramBotToken: e.target.value }
                   })}
                   placeholder="Your Telegram bot token"
-                  className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300"
+                  className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300 text-base"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-slate-300">
                   Discord Bot Token
                 </label>
                 <input
@@ -231,12 +250,12 @@ export const SettingsPage: React.FC = () => {
                     notifications: { ...localSettings.notifications, discordBotToken: e.target.value }
                   })}
                   placeholder="Your Discord bot token"
-                  className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300"
+                  className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300 text-base"
                 />
               </div>
 
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+              <div className="lg:col-span-2 space-y-2">
+                <label className="block text-sm font-medium text-slate-300">
                   Admin Chat ID
                 </label>
                 <input
@@ -247,7 +266,7 @@ export const SettingsPage: React.FC = () => {
                     notifications: { ...localSettings.notifications, adminChatId: e.target.value }
                   })}
                   placeholder="Your Telegram chat ID or Discord channel ID"
-                  className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300"
+                  className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300 text-base"
                 />
               </div>
             </div>
@@ -255,12 +274,12 @@ export const SettingsPage: React.FC = () => {
             {/* Notification Toggles */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium text-white">Notification Types</h3>
-              
+
               <div className="space-y-3">
-                <label className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
-                  <div>
-                    <span className="text-white font-medium">NFT Floor Price Alerts</span>
-                    <p className="text-slate-400 text-sm">Get notified when NFT floor prices change</p>
+                <label className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-700/50 touch-manipulation">
+                  <div className="flex-1 pr-4">
+                    <span className="text-white font-medium block">NFT Floor Price Alerts</span>
+                    <p className="text-slate-400 text-sm mt-1">Get notified when NFT floor prices change</p>
                   </div>
                   <input
                     type="checkbox"
@@ -269,9 +288,10 @@ export const SettingsPage: React.FC = () => {
                       ...localSettings,
                       notifications: { ...localSettings.notifications, enableNftAlerts: e.target.checked }
                     })}
-                    className="w-5 h-5 text-cyan-500 bg-slate-700 border-slate-600 rounded focus:ring-cyan-500 focus:ring-2"
+                    className="w-6 h-6 text-cyan-500 bg-slate-700 border-slate-600 rounded focus:ring-cyan-500 focus:ring-2 flex-shrink-0"
                   />
                 </label>
+
 
                 <label className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
                   <div>
@@ -293,6 +313,7 @@ export const SettingsPage: React.FC = () => {
                   <div>
                     <span className="text-white font-medium">Chain Fusion Alerts</span>
                     <p className="text-slate-400 text-sm">Get notified about Bitcoin and Ethereum Chain Fusion opportunities</p>
+
                   </div>
                   <input
                     type="checkbox"
@@ -301,14 +322,14 @@ export const SettingsPage: React.FC = () => {
                       ...localSettings,
                       notifications: { ...localSettings.notifications, enableChainFusionAlerts: e.target.checked }
                     })}
-                    className="w-5 h-5 text-cyan-500 bg-slate-700 border-slate-600 rounded focus:ring-cyan-500 focus:ring-2"
+                    className="w-6 h-6 text-cyan-500 bg-slate-700 border-slate-600 rounded focus:ring-cyan-500 focus:ring-2 flex-shrink-0"
                   />
                 </label>
 
-                <label className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
-                  <div>
-                    <span className="text-white font-medium">Portfolio Updates</span>
-                    <p className="text-slate-400 text-sm">Get notified about changes in your NFT portfolio</p>
+                <label className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-700/50 touch-manipulation">
+                  <div className="flex-1 pr-4">
+                    <span className="text-white font-medium block">Portfolio Updates</span>
+                    <p className="text-slate-400 text-sm mt-1">Get notified about changes in your NFT portfolio</p>
                   </div>
                   <input
                     type="checkbox"
@@ -317,17 +338,17 @@ export const SettingsPage: React.FC = () => {
                       ...localSettings,
                       notifications: { ...localSettings.notifications, enablePortfolioUpdates: e.target.checked }
                     })}
-                    className="w-5 h-5 text-cyan-500 bg-slate-700 border-slate-600 rounded focus:ring-cyan-500 focus:ring-2"
+                    className="w-6 h-6 text-cyan-500 bg-slate-700 border-slate-600 rounded focus:ring-cyan-500 focus:ring-2 flex-shrink-0"
                   />
                 </label>
               </div>
             </div>
 
-            <div className="flex justify-end">
+            <div className="flex justify-center sm:justify-end pt-4">
               <button
                 onClick={() => handleSave('notifications')}
                 disabled={isSaving}
-                className="flex items-center space-x-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 disabled:opacity-50"
+                className="flex items-center space-x-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 active:scale-95 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 disabled:opacity-50 touch-manipulation min-h-[48px] w-full sm:w-auto"
               >
                 <Save size={20} />
                 <span>{isSaving ? 'Saving...' : 'Save Notifications'}</span>
@@ -339,7 +360,7 @@ export const SettingsPage: React.FC = () => {
 
       {/* UI Settings Tab */}
       {activeTab === 'ui' && (
-        <div className="bg-gradient-to-br from-slate-800/30 to-slate-900/30 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 shadow-2xl">
+        <div className="bg-gradient-to-br from-slate-800/30 to-slate-900/30 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-4 sm:p-6 shadow-2xl">
           <h2 className="text-xl font-semibold text-white mb-6 flex items-center">
             <Palette className="w-5 h-5 mr-2 text-pink-400" />
             Interface Customization
@@ -347,10 +368,10 @@ export const SettingsPage: React.FC = () => {
 
           <div className="space-y-6">
             <div className="space-y-4">
-              <label className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
-                <div>
-                  <span className="text-white font-medium">Dark Mode</span>
-                  <p className="text-slate-400 text-sm">Toggle between light and dark themes</p>
+              <label className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-700/50 touch-manipulation">
+                <div className="flex-1 pr-4">
+                  <span className="text-white font-medium block">Dark Mode</span>
+                  <p className="text-slate-400 text-sm mt-1">Toggle between light and dark themes</p>
                 </div>
                 <input
                   type="checkbox"
@@ -359,17 +380,17 @@ export const SettingsPage: React.FC = () => {
                     ...localSettings,
                     ui: { ...localSettings.ui, darkMode: e.target.checked }
                   })}
-                  className="w-5 h-5 text-cyan-500 bg-slate-700 border-slate-600 rounded focus:ring-cyan-500 focus:ring-2"
+                  className="w-6 h-6 text-cyan-500 bg-slate-700 border-slate-600 rounded focus:ring-cyan-500 focus:ring-2 flex-shrink-0"
                 />
               </label>
 
               <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <span className="text-white font-medium">Animation Speed</span>
-                    <p className="text-slate-400 text-sm">Adjust the speed of interface animations</p>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-2 sm:space-y-0">
+                  <div className="flex-1 sm:pr-4">
+                    <span className="text-white font-medium block">Animation Speed</span>
+                    <p className="text-slate-400 text-sm mt-1">Adjust the speed of interface animations</p>
                   </div>
-                  <span className="text-cyan-400 font-medium">{localSettings.ui.animationSpeed}x</span>
+                  <span className="text-cyan-400 font-medium text-lg">{localSettings.ui.animationSpeed}x</span>
                 </div>
                 <input
                   type="range"
@@ -381,12 +402,12 @@ export const SettingsPage: React.FC = () => {
                     ...localSettings,
                     ui: { ...localSettings.ui, animationSpeed: parseFloat(e.target.value) }
                   })}
-                  className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer slider"
+                  className="w-full h-3 bg-slate-700 rounded-lg appearance-none cursor-pointer slider touch-manipulation"
                   style={{
                     background: `linear-gradient(to right, rgb(6 182 212) 0%, rgb(6 182 212) ${((localSettings.ui.animationSpeed - 0.5) / 1.5) * 100}%, rgb(51 65 85) ${((localSettings.ui.animationSpeed - 0.5) / 1.5) * 100}%, rgb(51 65 85) 100%)`
                   }}
                 />
-                <div className="flex justify-between text-xs text-slate-500 mt-1">
+                <div className="flex justify-between text-xs text-slate-500 mt-2">
                   <span>Slow</span>
                   <span>Normal</span>
                   <span>Fast</span>
@@ -394,11 +415,11 @@ export const SettingsPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex justify-end">
+            <div className="flex justify-center sm:justify-end pt-4">
               <button
                 onClick={() => handleSave('ui')}
                 disabled={isSaving}
-                className="flex items-center space-x-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 disabled:opacity-50"
+                className="flex items-center space-x-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 active:scale-95 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 disabled:opacity-50 touch-manipulation min-h-[48px] w-full sm:w-auto"
               >
                 <Save size={20} />
                 <span>{isSaving ? 'Saving...' : 'Save Interface'}</span>

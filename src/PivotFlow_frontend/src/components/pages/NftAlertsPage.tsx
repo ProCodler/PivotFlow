@@ -146,6 +146,7 @@ export const NftAlertsPage: React.FC = () => {
                   <option value="ETH">ETH</option>
                   <option value="BTC">BTC</option>
                   <option value="SOL">SOL</option>
+                  <option value="ICP">ICP</option>
                   <option value="MATIC">MATIC</option>
                 </select>
               </div>
