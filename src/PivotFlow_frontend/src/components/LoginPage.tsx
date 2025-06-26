@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext'
 import { LoadingSpinner } from './LoadingSpinner';
 import { CosmicBackground } from './CosmicBackground';
-import { Rocket, Shield, Zap, Users, Globe, Lock } from 'lucide-react';
+import { PivotFlowLogo } from './PivotFlowLogo';
+import {  Shield, Zap, Users, Globe, Lock } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
   const { login, isLoading } = useAuth();
@@ -66,14 +67,7 @@ export const LoginPage: React.FC = () => {
       <div className="min-h-screen relative z-10 flex flex-col">
         {/* Header */}
         <header className="p-6 text-center">
-          <div className="flex items-center justify-center space-x-3 mb-2">
-            <div className="p-3 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-2xl shadow-lg shadow-cyan-500/25">
-              <Rocket className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              PivotFlow
-            </h1>
-          </div>
+         <PivotFlowLogo size="lg" />
           <p className="text-slate-400 text-sm md:text-base">
             Your mission control for NFT monitoring and cross-chain fee optimization
           </p>
@@ -92,7 +86,7 @@ export const LoginPage: React.FC = () => {
                   Welcome to the Future of NFT Monitoring
                 </h2>
                 <p className="text-slate-400 text-lg mb-8 max-w-2xl mx-auto">
-                  Secure, decentralized, and powered by the Internet Computer Protocol. 
+                  Secure, decentralized, and powered by the Internet Computer Protocol.
                   Login with Internet Identity to access your personalized NFT alert dashboard.
                 </p>
               </div>

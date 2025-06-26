@@ -4,14 +4,18 @@ import { AppProvider, useAppContext } from './contexts/AppContext';
 import { useAuth } from './contexts/AuthContext';
 import { CosmicBackground } from './components/CosmicBackground';
 import { ErrorToast } from './components/ErrorToast';
+import { NotificationCenter } from './components/NotificationCenter';
 import { LoginPage } from './components/LoginPage';
 import { UserProfile } from './components/UserProfile';
+import { PivotFlowLogo } from './components/PivotFlowLogo';
 import { DashboardPage } from './components/pages/DashboardPage';
 import { NftAlertsPage } from './components/pages/NftAlertsPage';
 import { BlockchainFeesPage } from './components/pages/BlockchainFeesPage';
 import { PortfolioPage } from './components/pages/PortfolioPage';
 import { SettingsPage } from './components/pages/SettingsPage';
-import { BarChart3, Bell, Zap, Eye, Settings, Rocket } from 'lucide-react';
+import { AdvancedFeaturesPage } from './components/pages/AdvancedFeaturesPage';
+import { BarChart3, Bell, Zap, Eye, Settings, Brain } from 'lucide-react';
+import './advanced-effects.css';
 
 const Navigation: React.FC = () => {
   const { currentView, setCurrentView } = useAppContext();
@@ -21,6 +25,7 @@ const Navigation: React.FC = () => {
     { id: 'nft-alerts', label: 'NFT Alerts', icon: Bell },
     { id: 'blockchain-fees', label: 'Blockchain Fees', icon: Zap },
     { id: 'portfolio', label: 'Portfolio', icon: Eye },
+    { id: 'advanced', label: 'Advanced', icon: Brain },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
@@ -31,11 +36,10 @@ const Navigation: React.FC = () => {
           <button
             key={id}
             onClick={() => setCurrentView(id)}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 ${
-              currentView === id
-                ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/25'
-                : 'bg-slate-800/50 text-slate-300 hover:text-white hover:bg-slate-700/70 border border-slate-700/50'
-            }`}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 ${currentView === id
+              ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/25'
+              : 'bg-slate-800/50 text-slate-300 hover:text-white hover:bg-slate-700/70 border border-slate-700/50'
+              }`}
           >
             <Icon size={18} />
             <span className="hidden sm:inline">{label}</span>
@@ -60,6 +64,8 @@ const AppContent: React.FC = () => {
         return <BlockchainFeesPage />;
       case 'portfolio':
         return <PortfolioPage />;
+      case 'advanced':
+        return <AdvancedFeaturesPage />;
       case 'settings':
         return <SettingsPage />;
       default:
@@ -75,25 +81,16 @@ const AppContent: React.FC = () => {
     <>
       <CosmicBackground />
       <ErrorToast />
-      
+
       <div className="min-h-screen relative z-10 flex flex-col">
         {/* Header */}
         <header className="p-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-2xl shadow-lg shadow-cyan-500/25">
-                <Rocket className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  PivotFlow
-                </h1>
-                <p className="text-slate-400 text-sm">
-                  Your mission control for NFT monitoring and cross-chain fee optimization
-                </p>
-              </div>
+            <PivotFlowLogo size="lg" />
+            <div className="flex items-center gap-2">
+              <NotificationCenter />
+              <UserProfile />
             </div>
-            <UserProfile />
           </div>
         </header>
 
