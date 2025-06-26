@@ -91,18 +91,20 @@ export const SettingsPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-300">
-                  OpenSea API Key
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  ICP Explorer API Key
                 </label>
                 <input
                   type="password"
-                  value={localSettings.apiKeys.opensea}
+                  value={localSettings.apiKeys.icpExplorer}
                   onChange={(e) => setLocalSettings({
                     ...localSettings,
-                    apiKeys: { ...localSettings.apiKeys, opensea: e.target.value }
+                    apiKeys: { ...localSettings.apiKeys, icpExplorer: e.target.value }
                   })}
+<<<<<<< feat/pivotflow-frontend-init
                   placeholder="Your OpenSea API key"
                   className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300 text-base"
                 />
@@ -112,69 +114,87 @@ export const SettingsPage: React.FC = () => {
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-slate-300">
                   Etherscan API Key
+=======
+                  placeholder="Your IC Explorer API key"
+                  className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300"
+                />
+                <p className="text-xs text-slate-500 mt-1">For Internet Computer data</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  NFT Marketplace API Key
+>>>>>>> main
                 </label>
                 <input
                   type="password"
-                  value={localSettings.apiKeys.etherscan}
+                  value={localSettings.apiKeys.nftMarketplace}
                   onChange={(e) => setLocalSettings({
                     ...localSettings,
-                    apiKeys: { ...localSettings.apiKeys, etherscan: e.target.value }
+                    apiKeys: { ...localSettings.apiKeys, nftMarketplace: e.target.value }
                   })}
+
+                  placeholder="Your OpenSea/NFT marketplace API key"
+                  className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300"
+                />
+                <p className="text-xs text-slate-500 mt-1">For NFT collection data</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  Bitcoin Explorer API Key
+
+                </label>
+                <input
+                  type="password"
+                  value={localSettings.apiKeys.btcExplorer}
+                  onChange={(e) => setLocalSettings({
+                    ...localSettings,
+                    apiKeys: { ...localSettings.apiKeys, btcExplorer: e.target.value }
+                  })}
+
+                  placeholder="Your Bitcoin explorer API key"
+                  className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300"
+                />
+                <p className="text-xs text-slate-500 mt-1">For Bitcoin Chain Fusion data</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  Ethereum Explorer API Key
+
+                </label>
+                <input
+                  type="password"
+                  value={localSettings.apiKeys.ethExplorer}
+                  onChange={(e) => setLocalSettings({
+                    ...localSettings,
+                    apiKeys: { ...localSettings.apiKeys, ethExplorer: e.target.value }
+                  })}
+
                   placeholder="Your Etherscan API key"
-                  className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300 text-base"
+                  className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300"
                 />
-                <p className="text-xs text-slate-500">For Ethereum gas prices</p>
+                <p className="text-xs text-slate-500 mt-1">For Ethereum Chain Fusion data</p>
               </div>
 
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-300">
-                  Polygonscan API Key
-                </label>
-                <input
-                  type="password"
-                  value={localSettings.apiKeys.polygonscan}
-                  onChange={(e) => setLocalSettings({
-                    ...localSettings,
-                    apiKeys: { ...localSettings.apiKeys, polygonscan: e.target.value }
-                  })}
-                  placeholder="Your Polygonscan API key"
-                  className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300 text-base"
-                />
-                <p className="text-xs text-slate-500">For Polygon gas prices</p>
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-300">
-                  BSCScan API Key
-                </label>
-                <input
-                  type="password"
-                  value={localSettings.apiKeys.bscscan}
-                  onChange={(e) => setLocalSettings({
-                    ...localSettings,
-                    apiKeys: { ...localSettings.apiKeys, bscscan: e.target.value }
-                  })}
-                  placeholder="Your BSCScan API key"
-                  className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300 text-base"
-                />
-                <p className="text-xs text-slate-500">For BNB Chain gas prices</p>
-              </div>
-
-              <div className="lg:col-span-2 space-y-2">
-                <label className="block text-sm font-medium text-slate-300">
-                  Solana RPC Endpoint
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  Price Oracle API Key
                 </label>
                 <input
                   type="text"
-                  value={localSettings.apiKeys.solana}
+                  value={localSettings.apiKeys.priceOracle}
                   onChange={(e) => setLocalSettings({
                     ...localSettings,
-                    apiKeys: { ...localSettings.apiKeys, solana: e.target.value }
+                    apiKeys: { ...localSettings.apiKeys, priceOracle: e.target.value }
                   })}
-                  placeholder="https://api.mainnet-beta.solana.com"
-                  className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300 text-base"
+
+                  placeholder="Your CoinGecko or price feed API key"
+                  className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300"
                 />
-                <p className="text-xs text-slate-500">For Solana network data</p>
+                <p className="text-xs text-slate-500 mt-1">For real-time price data</p>
+
               </div>
             </div>
 
@@ -272,17 +292,35 @@ export const SettingsPage: React.FC = () => {
                   />
                 </label>
 
-                <label className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-700/50 touch-manipulation">
-                  <div className="flex-1 pr-4">
-                    <span className="text-white font-medium block">Gas Price Alerts</span>
-                    <p className="text-slate-400 text-sm mt-1">Get notified when gas prices drop below your threshold</p>
+
+                <label className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
+                  <div>
+                    <span className="text-white font-medium">Cycles Alerts</span>
+                    <p className="text-slate-400 text-sm">Get notified when ICP cycles costs are optimal for operations</p>
                   </div>
                   <input
                     type="checkbox"
-                    checked={localSettings.notifications.enableGasAlerts}
+                    checked={localSettings.notifications.enableCyclesAlerts}
                     onChange={(e) => setLocalSettings({
                       ...localSettings,
-                      notifications: { ...localSettings.notifications, enableGasAlerts: e.target.checked }
+                      notifications: { ...localSettings.notifications, enableCyclesAlerts: e.target.checked }
+                    })}
+                    className="w-5 h-5 text-cyan-500 bg-slate-700 border-slate-600 rounded focus:ring-cyan-500 focus:ring-2"
+                  />
+                </label>
+
+                <label className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
+                  <div>
+                    <span className="text-white font-medium">Chain Fusion Alerts</span>
+                    <p className="text-slate-400 text-sm">Get notified about Bitcoin and Ethereum Chain Fusion opportunities</p>
+
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={localSettings.notifications.enableChainFusionAlerts}
+                    onChange={(e) => setLocalSettings({
+                      ...localSettings,
+                      notifications: { ...localSettings.notifications, enableChainFusionAlerts: e.target.checked }
                     })}
                     className="w-6 h-6 text-cyan-500 bg-slate-700 border-slate-600 rounded focus:ring-cyan-500 focus:ring-2 flex-shrink-0"
                   />

@@ -37,13 +37,13 @@ export const LoginPage: React.FC = () => {
     },
     {
       icon: Globe,
-      title: 'Cross-chain Support',
-      description: 'Monitor gas fees across Ethereum, Polygon, BNB Chain, and Solana',
+      title: 'ICP Chain Fusion',
+      description: 'Native Internet Computer with Bitcoin and Ethereum Chain Fusion integration',
     },
     {
       icon: Users,
       title: 'Portfolio Tracking',
-      description: 'Track your NFT portfolio across multiple wallets and blockchains',
+      description: 'Track your ICP, ckBTC, ckETH, and cross-chain NFT portfolio',
     },
   ];
 

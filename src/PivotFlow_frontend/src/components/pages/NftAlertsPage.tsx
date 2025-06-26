@@ -11,7 +11,7 @@ export const NftAlertsPage: React.FC = () => {
     collectionSlug: '',
     collectionName: '',
     targetPrice: '',
-    currency: 'ETH',
+    currency: 'ICP',
     alertType: 'drop_below' as 'drop_below' | 'rise_above' | 'any_change',
     gasLimit: '',
     percentageChange: '',
@@ -36,7 +36,7 @@ export const NftAlertsPage: React.FC = () => {
       collectionSlug: '',
       collectionName: '',
       targetPrice: '',
-      currency: 'ETH',
+      currency: 'ICP',
       alertType: 'drop_below',
       gasLimit: '',
       percentageChange: '',
@@ -140,7 +140,11 @@ export const NftAlertsPage: React.FC = () => {
                   onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
                   className="bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300"
                 >
+                  <option value="ICP">ICP</option>
+                  <option value="ckBTC">ckBTC</option>
+                  <option value="ckETH">ckETH</option>
                   <option value="ETH">ETH</option>
+                  <option value="BTC">BTC</option>
                   <option value="SOL">SOL</option>
                   <option value="ICP">ICP</option>
                   <option value="MATIC">MATIC</option>
