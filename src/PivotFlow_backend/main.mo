@@ -37,7 +37,7 @@ actor PivotFlow {
     // Initialize default data
     private func initializeDefaultData() {
         initStores();
-        
+
         // Initialize with some default ICP Chain Fusion operation costs
         let canisterCallFee : Types.NetworkFee = {
             operationType = "Canister Call";
@@ -47,7 +47,7 @@ actor PivotFlow {
             slow = { cycles = 250000.0; usd = 0.00025 };
             lastUpdated = Time.now();
         };
-        
+
         let httpRequestFee : Types.NetworkFee = {
             operationType = "HTTP Outcall";
             icon = "http-icon";
@@ -56,7 +56,7 @@ actor PivotFlow {
             slow = { cycles = 1500000.0; usd = 0.0015 };
             lastUpdated = Time.now();
         };
-        
+
         let storageUpdateFee : Types.NetworkFee = {
             operationType = "Storage Update";
             icon = "storage-icon";
@@ -65,39 +65,39 @@ actor PivotFlow {
             slow = { cycles = 500000.0; usd = 0.0005 };
             lastUpdated = Time.now();
         };
-        
+
         networkFeeStore.put("canister-call", canisterCallFee);
         networkFeeStore.put("http-outcall", httpRequestFee);
         networkFeeStore.put("storage-update", storageUpdateFee);
     };
 
     // User management
-    public shared(msg) func createUser(_username: Text) : async Types.User {
+    public shared (msg) func createUser(_username : Text) : async Types.User {
         let user : Types.User = {
             principal = msg.caller;
             createdAt = Time.now();
             lastLogin = Time.now();
             isOperator = false;
         };
-        
+
         userStore.put(msg.caller, user);
-        user
+        user;
     };
 
-    public shared(msg) func getUser() : async ?Types.User {
-        userStore.get(msg.caller)
+    public shared (msg) func getUser() : async ?Types.User {
+        userStore.get(msg.caller);
     };
 
     // Network fees
     public query func getNetworkFees() : async [Types.NetworkFee] {
-        Iter.toArray(networkFeeStore.vals())
+        Iter.toArray(networkFeeStore.vals());
     };
 
-    public shared(_msg) func updateNetworkFee(
-        operationType: Text,
-        fast: Types.CyclesCostInfo,
-        standard: Types.CyclesCostInfo,
-        slow: Types.CyclesCostInfo
+    public shared (_msg) func updateNetworkFee(
+        operationType : Text,
+        fast : Types.CyclesCostInfo,
+        standard : Types.CyclesCostInfo,
+        slow : Types.CyclesCostInfo,
     ) : async Types.NetworkFee {
         let fee : Types.NetworkFee = {
             operationType;
@@ -107,18 +107,18 @@ actor PivotFlow {
             slow;
             lastUpdated = Time.now();
         };
-        
+
         networkFeeStore.put(Text.toLowercase(operationType), fee);
-        fee
+        fee;
     };
 
     // NFT Alerts
-    public shared(msg) func createNFTAlert(
-        collectionSlug: Text,
-        collectionName: Text,
-        alertType: Types.AlertType,
-        targetPrice: Float,
-        currency: Text
+    public shared (msg) func createNFTAlert(
+        collectionSlug : Text,
+        collectionName : Text,
+        alertType : Types.AlertType,
+        targetPrice : Float,
+        currency : Text,
     ) : async Types.NFTAlert {
         let id = Text.concat(Principal.toText(msg.caller), collectionSlug);
         let alert : Types.NFTAlert = {
@@ -136,24 +136,24 @@ actor PivotFlow {
             percentageChange = null;
             createdAt = Time.now();
         };
-        
+
         nftAlertStore.put(id, alert);
-        alert
+        alert;
     };
 
-    public shared(msg) func getUserNFTAlerts() : async [Types.NFTAlert] {
+    public shared (msg) func getUserNFTAlerts() : async [Types.NFTAlert] {
         let allAlerts = Iter.toArray(nftAlertStore.entries());
         Array.mapFilter<(Text, Types.NFTAlert), Types.NFTAlert>(
             allAlerts,
-            func((_, alert)) = if (alert.userId == msg.caller) ?alert else null
-        )
+            func((_, alert)) = if (alert.userId == msg.caller) ?alert else null,
+        );
     };
 
     // Cycles Alerts
-    public shared(msg) func createCyclesAlert(
-        operationType: Text,
-        maxCyclesCost: Nat,
-        priorityTier: Types.PriorityTier
+    public shared (msg) func createCyclesAlert(
+        operationType : Text,
+        maxCyclesCost : Nat,
+        priorityTier : Types.PriorityTier,
     ) : async Types.CyclesAlert {
         let id = Text.concat(Principal.toText(msg.caller), operationType);
         let alert : Types.CyclesAlert = {
@@ -165,17 +165,17 @@ actor PivotFlow {
             isActive = true;
             createdAt = Time.now();
         };
-        
+
         cyclesAlertStore.put(id, alert);
-        alert
+        alert;
     };
 
-    public shared(msg) func getUserCyclesAlerts() : async [Types.CyclesAlert] {
+    public shared (msg) func getUserCyclesAlerts() : async [Types.CyclesAlert] {
         let allAlerts = Iter.toArray(cyclesAlertStore.entries());
         Array.mapFilter<(Text, Types.CyclesAlert), Types.CyclesAlert>(
             allAlerts,
-            func((_, alert)) = if (alert.userId == msg.caller) ?alert else null
-        )
+            func((_, alert)) = if (alert.userId == msg.caller) ?alert else null,
+        );
     };
 
     // Manual initialization for testing
@@ -183,10 +183,10 @@ actor PivotFlow {
         if (not isInitialized) {
             initializeDefaultData();
             isInitialized := true;
-            "Initialized successfully"
+            "Initialized successfully";
         } else {
-            "Already initialized"
-        }
+            "Already initialized";
+        };
     };
 
     // System upgrade functions
@@ -195,7 +195,7 @@ actor PivotFlow {
         nftAlerts := Iter.toArray(nftAlertStore.entries());
         cyclesAlerts := Iter.toArray(cyclesAlertStore.entries());
         networkFees := Iter.toArray(networkFeeStore.entries());
-    };    
+    };
 
     system func postupgrade() {
         if (not isInitialized) {
@@ -203,4 +203,4 @@ actor PivotFlow {
             isInitialized := true;
         };
     };
-}
+};
