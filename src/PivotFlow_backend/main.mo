@@ -195,7 +195,7 @@ actor PivotFlow {
         nftAlerts := Iter.toArray(nftAlertStore.entries());
         cyclesAlerts := Iter.toArray(cyclesAlertStore.entries());
         networkFees := Iter.toArray(networkFeeStore.entries());
-    };
+    };    
 
     system func postupgrade() {
         if (not isInitialized) {

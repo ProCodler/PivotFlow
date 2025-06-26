@@ -43,8 +43,10 @@ if ! command -v node &> /dev/null; then
     exit 1
 fi
 
+
 print_status "Checking dfx version..."
 dfx --version
+
 
 print_status "Checking Node.js version..."
 node --version
@@ -84,7 +86,7 @@ if ! dfx canister id internet_identity &> /dev/null; then
     else
         print_warning "Failed to pull dependencies, trying alternative approach..."
     fi
-    
+        
     # Initialize Internet Identity dependency
     if dfx deps init internet_identity --argument null; then
         print_success "Internet Identity initialized!"
