@@ -1,7 +1,6 @@
 import React from 'react';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { AppProvider, useAppContext } from './contexts/AppContext';
-import { useAuth } from './contexts/AuthContext';
 import { CosmicBackground } from './components/CosmicBackground';
 import { ErrorToast } from './components/ErrorToast';
 import { NotificationCenter } from './components/NotificationCenter';

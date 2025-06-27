@@ -11,12 +11,14 @@ actor PivotFlow {
     private stable var nftAlerts : [(Text, Types.NFTAlert)] = [];
     private stable var cyclesAlerts : [(Text, Types.CyclesAlert)] = [];
     private stable var networkFees : [(Text, Types.NetworkFee)] = [];
+    private stable var telegramNotifications : [(Text, Types.TelegramNotification)] = [];
     private stable var isInitialized : Bool = false;
 
     private var userStore = HashMap.HashMap<Principal, Types.User>(10, Principal.equal, Principal.hash);
     private var nftAlertStore = HashMap.HashMap<Text, Types.NFTAlert>(10, Text.equal, Text.hash);
     private var cyclesAlertStore = HashMap.HashMap<Text, Types.CyclesAlert>(10, Text.equal, Text.hash);
     private var networkFeeStore = HashMap.HashMap<Text, Types.NetworkFee>(10, Text.equal, Text.hash);
+    private var telegramNotificationStore = HashMap.HashMap<Text, Types.TelegramNotification>(10, Text.equal, Text.hash);
 
     // Initialize stores from stable memory
     private func initStores() {
@@ -31,6 +33,9 @@ actor PivotFlow {
         };
         for ((k, v) in networkFees.vals()) {
             networkFeeStore.put(k, v);
+        };
+        for ((k, v) in telegramNotifications.vals()) {
+            telegramNotificationStore.put(k, v);
         };
     };
 
@@ -189,12 +194,55 @@ actor PivotFlow {
         };
     };
 
+    // Log Telegram notification
+    public func logTelegramNotification(
+        notificationType: Types.NotificationType,
+        title: Text,
+        message: Text,
+        blockchain: ?Text,
+        amount: ?Float,
+        currency: ?Text,
+        priority: Text,
+        success: Bool
+    ) : async Text {
+        let caller = Principal.fromText("aaaaa-aa"); // We'll use anonymous principal for demo
+        let notificationId = Text.concat("telegram_", Principal.toText(caller));
+        let notification : Types.TelegramNotification = {
+            id = notificationId;
+            userId = caller;
+            notificationType = notificationType;
+            title = title;
+            message = message;
+            blockchain = blockchain;
+            amount = amount;
+            currency = currency;
+            priority = priority;
+            sentAt = Time.now();
+            success = success;
+        };
+        
+        telegramNotificationStore.put(notificationId, notification);
+        notificationId
+    };
+
+    // Get user's Telegram notification history
+    public query func getTelegramNotifications(userId: Principal) : async [Types.TelegramNotification] {
+        let notifications = Iter.toArray(
+            Iter.filter(
+                telegramNotificationStore.vals(),
+                func(n: Types.TelegramNotification): Bool { n.userId == userId }
+            )
+        );
+        notifications
+    };
+
     // System upgrade functions
     system func preupgrade() {
         users := Iter.toArray(userStore.entries());
         nftAlerts := Iter.toArray(nftAlertStore.entries());
         cyclesAlerts := Iter.toArray(cyclesAlertStore.entries());
         networkFees := Iter.toArray(networkFeeStore.entries());
+        telegramNotifications := Iter.toArray(telegramNotificationStore.entries());
     };
 
     system func postupgrade() {

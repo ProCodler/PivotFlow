@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PivotFlow Test</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0D0D1A 0%, #1A0A2D 50%, #2E0A4E 100%);
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .status {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid #6366f1;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #5855eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 PivotFlow - ICP Chain Fusion Platform</h1>
+        
+        <div class="status">
+            <h2>✅ Basic Browser Test</h2>
+            <p>If you can see this, the browser is working correctly.</p>
+            <p id="time">Time: Loading...</p>
+            <button onclick="testFunction()">Test JavaScript</button>
+        </div>
+        
+        <div class="status">
+            <h2>🔧 Application Status</h2>
+            <p>✅ HTML/CSS Loading</p>
+            <p>✅ ICP Branding Visible</p>
+            <p>✅ Styling Applied</p>
+            <p id="js-status">⏳ JavaScript: Testing...</p>
+        </div>
+        
+        <div class="status">
+            <h2>📱 Next Steps</h2>
+            <p>If this page works, we can proceed to debug the React application.</p>
+            <ul style="text-align: left;">
+                <li>Check React component errors</li>
+                <li>Verify TypeScript compilation</li>
+                <li>Test Telegram integration</li>
+                <li>Load full PivotFlow application</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        console.log('🚀 PivotFlow test page JavaScript loading...');
+        
+        function updateTime() {
+            document.getElementById('time').textContent = 'Time: ' + new Date().toLocaleString();
+        }
+        
+        function testFunction() {
+            alert('🎉 JavaScript is working in the browser!');
+            document.getElementById('js-status').innerHTML = '✅ JavaScript: Working!';
+        }
+        
+        // Update time immediately and then every second
+        updateTime();
+        setInterval(updateTime, 1000);
+        
+        // Mark JavaScript as working
+        document.getElementById('js-status').innerHTML = '✅ JavaScript: Working!';
+        
+        console.log('✅ Test page loaded successfully');
+    </script>
+</body>
+</html>

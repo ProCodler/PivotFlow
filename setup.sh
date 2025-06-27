@@ -53,7 +53,7 @@ node --version
 
 # Install dependencies
 print_status "Installing Node.js dependencies..."
-npm install
+cd src/PivotFlow_frontend && npm install && cd ../..
 
 # Start dfx if not already running
 if ! dfx ping &> /dev/null; then
@@ -154,7 +154,7 @@ cd src/PivotFlow_frontend && npm install && cd ../..
 
 # Build frontend
 print_status "Building frontend..."
-npm run build
+cd src/PivotFlow_frontend && npm run build && cd ../..
 
 # Deploy frontend
 print_status "Deploying frontend canister..."

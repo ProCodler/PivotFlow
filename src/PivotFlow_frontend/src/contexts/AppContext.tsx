@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useAuth } from './AuthContext';
 import { canisterClient } from '../lib/canister';
+import { telegramService } from '../lib/telegram';
 
 // Types
 export interface NFTAlert {
@@ -412,6 +412,19 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           };
           
           setNftAlerts(prev => [...prev, formattedAlert]);
+          
+          // Send Telegram notification if enabled and chat ID is configured
+          if (settings.notifications.enableNftAlerts && settings.notifications.adminChatId) {
+            await telegramService.sendNftAlert(settings.notifications.adminChatId, {
+              collectionName: alert.collectionName,
+              floorPrice: formattedAlert.currentFloorPrice,
+              targetPrice: alert.targetPrice,
+              currency: alert.currency,
+              alertType: alert.alertType,
+              blockchain: alert.blockchain || 'Internet Computer',
+            });
+          }
+          
         } catch (backendError) {
           console.warn('Backend call failed, using local storage:', backendError);
           // Fallback: create alert locally
@@ -502,6 +515,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           };
           
           setGasAlerts(prev => [...prev, formattedAlert]);
+          
+          // Send Telegram notification if enabled and chat ID is configured
+          if (settings.notifications.enableCyclesAlerts && settings.notifications.adminChatId) {
+            await telegramService.sendCyclesAlert(settings.notifications.adminChatId, {
+              operationType: alert.operationType,
+              cyclesCost: alert.maxCycles,
+              threshold: alert.maxCycles,
+            });
+          }
+          
         } catch (backendError) {
           console.warn('Backend call failed, using local storage:', backendError);
           // Fallback: create alert locally
