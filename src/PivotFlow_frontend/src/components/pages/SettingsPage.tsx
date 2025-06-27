@@ -104,17 +104,6 @@ export const SettingsPage: React.FC = () => {
                     ...localSettings,
                     apiKeys: { ...localSettings.apiKeys, icpExplorer: e.target.value }
                   })}
-<<<<<<< feat/pivotflow-frontend-init
-                  placeholder="Your OpenSea API key"
-                  className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300 text-base"
-                />
-                <p className="text-xs text-slate-500">For NFT collection data</p>
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-300">
-                  Etherscan API Key
-=======
                   placeholder="Your IC Explorer API key"
                   className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300"
                 />
@@ -124,7 +113,6 @@ export const SettingsPage: React.FC = () => {
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
                   NFT Marketplace API Key
->>>>>>> main
                 </label>
                 <input
                   type="password"
@@ -133,7 +121,6 @@ export const SettingsPage: React.FC = () => {
                     ...localSettings,
                     apiKeys: { ...localSettings.apiKeys, nftMarketplace: e.target.value }
                   })}
-
                   placeholder="Your OpenSea/NFT marketplace API key"
                   className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300"
                 />

@@ -106,19 +106,11 @@ module Types {
 
     // Cached token price data
     public type CachedTokenPrice = {
-<<<<<<< feat/pivotflow-frontend-init
-        id : Text; // e.g., "bitcoin", "ethereum"
-        symbol : Text; // e.g., "BTC", "ETH"
-        name : Text; // e.g., "Bitcoin", "Ethereum"
+        id : Text; // e.g., "internet-computer", "bitcoin", "ethereum"
+        symbol : Text; // e.g., "ICP", "BTC", "ETH"
+        name : Text; // e.g., "Internet Computer", "Bitcoin", "Ethereum"
         priceUsd : Float;
         timestamp : Time;
-=======
-        id: Text; // e.g., "internet-computer", "bitcoin", "ethereum"
-        symbol: Text; // e.g., "ICP", "BTC", "ETH"
-        name: Text; // e.g., "Internet Computer", "Bitcoin", "Ethereum"
-        priceUsd: Float;
-        timestamp: Time;
->>>>>>> main
     };
 
     // NFT Item
