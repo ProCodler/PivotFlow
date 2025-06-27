@@ -168,8 +168,5 @@ MIT License. See `LICENSE` for details.
 
 PivotFlow is the all-in-one solution for digital asset management on the Internet Computer. Whether you're an individual investor, NFT collector, or organization, PivotFlow gives you the tools to make smarter decisions, faster.
 
-- **Contact:** [your.email@domain.com](mailto:your.email@domain.com)
-- **Website:** [https://pivotflow.app](https://pivotflow.app)
-- **Demo:** _Available upon request_
 
 > _Ready to unlock the full potential of your digital assets? Try PivotFlow today!_
