@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { SocialTrading } from '../SocialTrading';
-import { AIAlertSystem } from '../AIAlertSystem';
 import { DashboardMetrics } from '../DashboardMetrics';
 import { FeatureStats } from '../FeatureStats';
-import { Brain, Users, BarChart3, Star } from 'lucide-react';
+import { Users, BarChart3, Star } from 'lucide-react';
 
 export const AdvancedFeaturesPage: React.FC = () => {
-    const [activeTab, setActiveTab] = useState<'social' | 'ai' | 'metrics' | 'features'>('social');
+    const [activeTab, setActiveTab] = useState<'social' | 'metrics' | 'features'>('social');
 
     const tabs = [
         { id: 'social', label: 'Social Trading', icon: Users, component: SocialTrading },
-        { id: 'ai', label: 'AI Insights', icon: Brain, component: AIAlertSystem },
         { id: 'metrics', label: 'Analytics', icon: BarChart3, component: DashboardMetrics },
         { id: 'features', label: 'Feature Stats', icon: Star, component: FeatureStats }
     ];
@@ -34,10 +32,10 @@ export const AdvancedFeaturesPage: React.FC = () => {
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}
-                        onClick={() => setActiveTab(tab.id as any)}
+                        onClick={() => setActiveTab(tab.id as 'social' | 'metrics' | 'features')}
                         className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-medium transition-all duration-300 ${activeTab === tab.id
-                                ? 'bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-white border border-cyan-500/30 shadow-lg'
-                                : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
+                            ? 'bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-white border border-cyan-500/30 shadow-lg'
+                            : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
                             }`}
                     >
                         <tab.icon className="w-5 h-5" />

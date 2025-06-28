@@ -13,8 +13,7 @@ import { NftAlertsPage } from './components/pages/NftAlertsPage';
 import { BlockchainFeesPage } from './components/pages/BlockchainFeesPage';
 import { PortfolioPage } from './components/pages/PortfolioPage';
 import { SettingsPage } from './components/pages/SettingsPage';
-import { AdvancedFeaturesPage } from './components/pages/AdvancedFeaturesPage';
-import { BarChart3, Bell, Zap, Eye, Settings, Brain } from 'lucide-react';
+import { BarChart3, Bell, Zap, Eye, Settings } from 'lucide-react';
 import './advanced-effects.css';
 
 const Navigation: React.FC = () => {
@@ -25,7 +24,6 @@ const Navigation: React.FC = () => {
     { id: 'nft-alerts', label: 'NFT Alerts', icon: Bell },
     { id: 'blockchain-fees', label: 'Blockchain Fees', icon: Zap },
     { id: 'portfolio', label: 'Portfolio', icon: Eye },
-    { id: 'advanced', label: 'Advanced', icon: Brain },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
@@ -64,8 +62,6 @@ const AppContent: React.FC = () => {
         return <BlockchainFeesPage />;
       case 'portfolio':
         return <PortfolioPage />;
-      case 'advanced':
-        return <AdvancedFeaturesPage />;
       case 'settings':
         return <SettingsPage />;
       default:

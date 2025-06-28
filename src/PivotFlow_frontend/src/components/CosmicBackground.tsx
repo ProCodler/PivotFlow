@@ -40,13 +40,28 @@ export const CosmicBackground: React.FC = () => {
 
       {/* Floating crypto symbols with enhanced colors */}
       <div className="absolute inset-0">
+        {/* ICP symbol - prominent position */}
+        <div className="absolute text-5xl text-purple-400/30 animate-float-slow"
+             style={{ left: '15%', top: '15%', animationDelay: '0s' }}>
+          ∞
+        </div>
+        
+        {/* ICP symbol - second position */}
+        <div className="absolute text-4xl text-cyan-400/25 animate-float-medium"
+             style={{ left: '70%', top: '20%', animationDelay: '2s' }}>
+          ∞
+        </div>
+        
         {/* Bitcoin symbol */}
+
         <div className="absolute text-4xl text-orange-400/25 animate-float-slow drop-shadow-lg"
           style={{ left: '10%', top: '20%', animationDelay: '0s' }}>
+
           ₿
         </div>
 
         {/* Ethereum symbol */}
+
         <div className="absolute text-3xl text-blue-400/30 animate-float-medium drop-shadow-lg"
           style={{ left: '80%', top: '30%', animationDelay: '1s' }}>
           ⟠
@@ -62,6 +77,7 @@ export const CosmicBackground: React.FC = () => {
         <div className="absolute text-3xl text-purple-400/30 animate-float-slow drop-shadow-lg"
           style={{ left: '20%', top: '80%', animationDelay: '1.5s' }}>
           ∞
+
         </div>
 
         {/* NFT symbol */}
