@@ -24,7 +24,8 @@ export const NotificationCenter: React.FC = () => {
             id: activity.id,
             type: activity.type === 'nft_alert' ? 'info' :
                 activity.type === 'cycles_alert' ? 'warning' :
-                    activity.type === 'error' ? 'error' : 'success',
+                    activity.type === 'portfolio_update' ? 'success' :
+                        'info',
             title: activity.type === 'nft_alert' ? 'NFT Alert Triggered' :
                 activity.type === 'cycles_alert' ? 'Cycles Alert' :
                     activity.type === 'portfolio_update' ? 'Portfolio Updated' :
@@ -99,30 +100,30 @@ export const NotificationCenter: React.FC = () => {
     const getNotificationIcon = (type: string) => {
         switch (type) {
             case 'success':
-                return <Check className="w-5 h-5 text-green-400" />;
+                return <Check className="w-5 h-5 text-emerald-400" />;
             case 'warning':
                 return <AlertTriangle className="w-5 h-5 text-yellow-400" />;
             case 'error':
                 return <X className="w-5 h-5 text-red-400" />;
             case 'info':
-                return <Info className="w-5 h-5 text-blue-400" />;
+                return <Info className="w-5 h-5 text-sky-400" />;
             default:
-                return <Bell className="w-5 h-5 text-gray-400" />;
+                return <Bell className="w-5 h-5 text-muted-foreground" />;
         }
     };
 
     const getNotificationBorder = (type: string) => {
         switch (type) {
             case 'success':
-                return 'border-green-500/30 bg-green-500/5';
+                return 'border-emerald-500/30 bg-emerald-500/5';
             case 'warning':
                 return 'border-yellow-500/30 bg-yellow-500/5';
             case 'error':
                 return 'border-red-500/30 bg-red-500/5';
             case 'info':
-                return 'border-blue-500/30 bg-blue-500/5';
+                return 'border-sky-500/30 bg-sky-500/5';
             default:
-                return 'border-slate-700/50 bg-slate-800/30';
+                return 'border-border bg-card/30';
         }
     };
 
@@ -146,11 +147,13 @@ export const NotificationCenter: React.FC = () => {
             {/* Notification Bell */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="relative p-2 rounded-xl bg-slate-800/50 hover:bg-slate-700/50 transition-all duration-300 border border-slate-700/50"
+                className="relative p-2 rounded-xl glass-effect hover:border-sky-400/50 transition-all duration-200 border-glow"
+                aria-label="Open notifications"
+                title="Notifications"
             >
-                <Bell className="w-6 h-6 text-slate-300" />
+                <Bell className="w-6 h-6 text-sky-400" />
                 {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+                    <span className="absolute -top-1 -right-1 bg-sky-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
                         {unreadCount > 9 ? '9+' : unreadCount}
                     </span>
                 )}
@@ -158,15 +161,15 @@ export const NotificationCenter: React.FC = () => {
 
             {/* Notification Panel */}
             {isOpen && (
-                <div className="absolute right-0 top-12 w-96 bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-sm border border-slate-700/50 rounded-2xl shadow-2xl z-50 max-h-[600px] overflow-hidden">
+                <div className="absolute right-0 top-12 w-96 card-glow rounded-2xl z-50!  max-h-[600px] overflow-hidden">
                     {/* Header */}
-                    <div className="p-4 border-b border-slate-700/50">
+                    <div className="p-4 border-b border-border">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-2">
-                                <Bell className="w-5 h-5 text-cyan-400" />
-                                <h3 className="font-semibold text-white">Notifications</h3>
+                                <Bell className="w-5 h-5 text-sky-400" />
+                                <h3 className="font-semibold text-foreground">Notifications</h3>
                                 {unreadCount > 0 && (
-                                    <span className="bg-cyan-500/20 text-cyan-400 text-xs px-2 py-1 rounded-full">
+                                    <span className="bg-sky-500/20 text-sky-400 text-xs px-2 py-1 rounded-full">
                                         {unreadCount} new
                                     </span>
                                 )}
@@ -175,16 +178,18 @@ export const NotificationCenter: React.FC = () => {
                                 {unreadCount > 0 && (
                                     <button
                                         onClick={markAllAsRead}
-                                        className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
+                                        className="text-xs text-sky-400 hover:text-sky-300 transition-colors"
                                     >
                                         Mark all read
                                     </button>
                                 )}
                                 <button
                                     onClick={() => setIsOpen(false)}
-                                    className="p-1 hover:bg-slate-700/50 rounded-lg transition-colors"
+                                    className="p-1 hover:bg-muted/50 rounded-lg transition-colors"
+                                    aria-label="Close notifications"
+                                    title="Close"
                                 >
-                                    <X className="w-4 h-4 text-slate-400" />
+                                    <X className="w-4 h-4 text-muted-foreground" />
                                 </button>
                             </div>
                         </div>
@@ -194,9 +199,9 @@ export const NotificationCenter: React.FC = () => {
                     <div className="max-h-96 overflow-y-auto">
                         {notifications.length === 0 ? (
                             <div className="p-6 text-center">
-                                <Bell className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-                                <p className="text-slate-400">No notifications yet</p>
-                                <p className="text-sm text-slate-500 mt-1">
+                                <Bell className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                                <p className="text-muted-foreground">No notifications yet</p>
+                                <p className="text-sm text-muted-foreground/70 mt-1">
                                     We'll notify you when something important happens
                                 </p>
                             </div>
@@ -205,9 +210,9 @@ export const NotificationCenter: React.FC = () => {
                                 {notifications.map((notification) => (
                                     <div
                                         key={notification.id}
-                                        className={`p-3 rounded-xl border transition-all duration-300 hover:shadow-lg ${notification.isRead
-                                                ? 'bg-slate-800/30 border-slate-700/30'
-                                                : getNotificationBorder(notification.type)
+                                        className={`p-3 rounded-xl border transition-all duration-200 hover:border-sky-400/30 group ${notification.isRead
+                                            ? 'bg-card/30 border-border/30'
+                                            : getNotificationBorder(notification.type)
                                             }`}
                                     >
                                         <div className="flex items-start space-x-3">
@@ -217,25 +222,27 @@ export const NotificationCenter: React.FC = () => {
 
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center justify-between">
-                                                    <p className={`text-sm font-medium ${notification.isRead ? 'text-slate-300' : 'text-white'
+                                                    <p className={`text-sm font-medium ${notification.isRead ? 'text-muted-foreground' : 'text-foreground'
                                                         }`}>
                                                         {notification.title}
                                                     </p>
                                                     <button
                                                         onClick={() => clearNotification(notification.id)}
-                                                        className="opacity-0 group-hover:opacity-100 p-1 hover:bg-slate-700/50 rounded transition-all"
+                                                        className="opacity-0 group-hover:opacity-100 p-1 hover:bg-muted/50 rounded transition-all"
+                                                        aria-label="Clear notification"
+                                                        title="Clear"
                                                     >
-                                                        <X className="w-3 h-3 text-slate-400" />
+                                                        <X className="w-3 h-3 text-muted-foreground" />
                                                     </button>
                                                 </div>
 
-                                                <p className={`text-sm mt-1 ${notification.isRead ? 'text-slate-400' : 'text-slate-300'
+                                                <p className={`text-sm mt-1 ${notification.isRead ? 'text-muted-foreground' : 'text-muted-foreground'
                                                     }`}>
                                                     {notification.message}
                                                 </p>
 
                                                 <div className="flex items-center justify-between mt-2">
-                                                    <span className="text-xs text-slate-500">
+                                                    <span className="text-xs text-muted-foreground/70">
                                                         {formatTimeAgo(notification.timestamp)}
                                                     </span>
 
@@ -243,13 +250,13 @@ export const NotificationCenter: React.FC = () => {
                                                         {!notification.isRead && (
                                                             <button
                                                                 onClick={() => markAsRead(notification.id)}
-                                                                className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
+                                                                className="text-xs text-sky-400 hover:text-sky-300 transition-colors"
                                                             >
                                                                 Mark read
                                                             </button>
                                                         )}
                                                         {notification.actionUrl && (
-                                                            <button className="text-xs text-blue-400 hover:text-blue-300 transition-colors">
+                                                            <button className="text-xs text-sky-400 hover:text-sky-300 transition-colors">
                                                                 View
                                                             </button>
                                                         )}
@@ -264,8 +271,8 @@ export const NotificationCenter: React.FC = () => {
                     </div>
 
                     {/* Footer */}
-                    <div className="p-3 border-t border-slate-700/50">
-                        <button className="w-full text-sm text-cyan-400 hover:text-cyan-300 transition-colors flex items-center justify-center space-x-2">
+                    <div className="p-3 border-t border-border">
+                        <button className="w-full text-sm text-sky-400 hover:text-sky-300 transition-colors flex items-center justify-center space-x-2">
                             <Settings className="w-4 h-4" />
                             <span>Notification Settings</span>
                         </button>
@@ -276,10 +283,10 @@ export const NotificationCenter: React.FC = () => {
             {/* Backdrop */}
             {isOpen && (
                 <div
-                    className="fixed inset-0 z-40"
+                    className="fixed inset-0 z-45"
                     onClick={() => setIsOpen(false)}
                 />
             )}
         </div>
     );
-};
+};      
