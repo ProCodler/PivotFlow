@@ -246,7 +246,7 @@ export const BlockchainFeesPage: React.FC = () => {
 
       {/* Create Alert Modal */}
       {showCreateAlert && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-40 p-4">
           <div className="bg-slate-800 rounded-2xl p-6 w-full max-w-md border border-slate-700/50 shadow-2xl">
             <h3 className="text-xl font-bold text-white mb-4">Create Gas Alert</h3>
 
@@ -334,3 +334,5 @@ export const BlockchainFeesPage: React.FC = () => {
     </div>
   );
 };
+
+export default BlockchainFeesPage;

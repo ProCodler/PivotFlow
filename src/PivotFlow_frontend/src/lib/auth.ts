@@ -45,6 +45,7 @@ export class AuthService {
             : 'https://identity.ic0.app',
           onSuccess: () => {
             this.identity = authClient.getIdentity();
+            console.log('Login successful, identity set:', this.identity?.getPrincipal().toString());
             resolve(true);
           },
           onError: (error) => {
@@ -80,6 +81,32 @@ export class AuthService {
     } catch (error) {
       console.error('Authentication check failed:', error);
       return false;
+    }
+  }
+
+  public async getAuthState(): Promise<AuthState> {
+    try {
+      const authClient = await this.init();
+      const isAuthenticated = await authClient.isAuthenticated();
+      
+      if (isAuthenticated && !this.identity) {
+        this.identity = authClient.getIdentity();
+      }
+      
+      return {
+        isAuthenticated,
+        identity: this.identity,
+        principal: this.identity?.getPrincipal().toString() || null,
+        authClient: this.authClient,
+      };
+    } catch (error) {
+      console.error('Failed to get auth state:', error);
+      return {
+        isAuthenticated: false,
+        identity: null,
+        principal: null,
+        authClient: null,
+      };
     }
   }
 

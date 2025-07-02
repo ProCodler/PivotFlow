@@ -314,3 +314,5 @@ export const PortfolioPage: React.FC = () => {
     </div>
   );
 };
+
+export default PortfolioPage;

@@ -300,3 +300,5 @@ export const NftAlertsPage: React.FC = () => {
     </div>
   );
 };
+
+export default NftAlertsPage;
