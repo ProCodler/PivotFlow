@@ -110,6 +110,21 @@ export class CanisterClient {
     return await this.actor.createCyclesAlert(operationType, BigInt(maxCyclesCost), priorityTier);
   }
 
+  // Gas Alerts (for traditional blockchain gas fees)
+  public async getUserGasAlerts() {
+    if (!this.actor) throw new Error('Actor not initialized');
+    return await this.actor.getUserGasAlerts();
+  }
+
+  public async createGasAlert(
+    blockchain: string,
+    maxGwei: number,
+    priorityTier: { fast: null } | { standard: null } | { slow: null }
+  ) {
+    if (!this.actor) throw new Error('Actor not initialized');
+    return await this.actor.createGasAlert(blockchain, maxGwei, priorityTier);
+  }
+
   // Network Fees
   public async getNetworkFees() {
     if (!this.actor) throw new Error('Actor not initialized');

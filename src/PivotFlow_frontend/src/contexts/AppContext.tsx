@@ -294,11 +294,24 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     try {
       setIsLoading(true);
       
+      // Ensure canister is initialized
+      try {
+        const actor = canisterClient.getActor();
+        if (!actor) {
+          console.warn('Actor not initialized, initializing now...');
+          await canisterClient.init();
+        }
+      } catch (error) {
+        console.warn('Failed to initialize actor:', error);
+        // Continue with demo mode if actor initialization fails
+        return;
+      }
+      
       // Load user info (including operator status) from backend
       try {
         const userData = await canisterClient.getUser();
-        if (userData && userData.length > 0) {
-          setIsOperator(userData[0].isOperator);
+        if (userData && typeof userData === 'object' && 'principal' in userData) {
+          setIsOperator(userData.isOperator || false);
         }
       } catch (error) {
         console.warn('Failed to load user data, continuing with defaults:', error);

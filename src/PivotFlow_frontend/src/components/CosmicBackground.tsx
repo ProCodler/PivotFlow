@@ -38,7 +38,7 @@ export const CosmicBackground: React.FC = () => {
 
       {/* Single subtle nebula effect */}
       <div className="absolute inset-0">
-        <div 
+        <div
           className="absolute w-96 h-96 bg-sky-500/5 rounded-full blur-3xl"
           style={{ left: '60%', top: '40%' }}
         ></div>

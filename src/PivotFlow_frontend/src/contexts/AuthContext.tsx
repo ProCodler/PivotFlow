@@ -1,69 +1,52 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Identity } from '@dfinity/agent';
-import { AuthClient } from '@dfinity/auth-client';
-import { authService, AuthState } from '../lib/auth';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { AuthService } from '../lib/auth';
+import { canisterClient } from '../lib/canister';
 
-interface AuthContextType extends AuthState {
+interface AuthContextType {
+  isAuthenticated: boolean;
+  principal: string | null;
+  isLoading: boolean;
   login: () => Promise<boolean>;
   logout: () => Promise<void>;
-  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [authState, setAuthState] = useState<AuthState>({
-    isAuthenticated: true, // Demo mode: default to authenticated
-    identity: null,
-    principal: 'demo-principal',
-    authClient: null,
-  });
-  const [isLoading, setIsLoading] = useState(false); // Demo mode: no loading
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [principal, setPrincipal] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const authService = new AuthService();
 
   useEffect(() => {
-    checkAuthStatus();
+    checkAuthState();
   }, []);
 
-  const checkAuthStatus = async () => {
+  const checkAuthState = async () => {
     try {
-      setIsLoading(true);
-      const isAuthenticated = await authService.isAuthenticated();
+      const authState = await authService.getAuthState();
+      setIsAuthenticated(authState.isAuthenticated);
+      setPrincipal(authState.principal);
       
-      if (isAuthenticated) {
-        const identity = authService.getIdentity();
-        const principal = authService.getPrincipal();
-        const authClient = authService.getAuthClient();
-        
-        setAuthState({
-          isAuthenticated: true,
-          identity,
-          principal,
-          authClient,
-        });
-      } else {
-        setAuthState({
-          isAuthenticated: false,
-          identity: null,
-          principal: null,
-          authClient: null,
-        });
+      // Initialize canister client with identity if authenticated
+      if (authState.isAuthenticated && authState.identity) {
+        try {
+          await canisterClient.init(authState.identity);
+          console.log('Canister client initialized successfully');
+        } catch (error) {
+          console.warn('Failed to initialize canister client:', error);
+        }
       }
     } catch (error) {
-      console.error('Auth status check failed:', error);
-      setAuthState({
-        isAuthenticated: false,
-        identity: null,
-        principal: null,
-        authClient: null,
-      });
+      console.error('Auth check failed:', error);
     } finally {
       setIsLoading(false);
     }
@@ -75,19 +58,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const success = await authService.login();
       
       if (success) {
-        const identity = authService.getIdentity();
-        const principal = authService.getPrincipal();
-        const authClient = authService.getAuthClient();
+        const authState = await authService.getAuthState();
+        setIsAuthenticated(true);
+        setPrincipal(authState.principal);
         
-        setAuthState({
-          isAuthenticated: true,
-          identity,
-          principal,
-          authClient,
-        });
-        return true;
+        // Initialize canister client with the new identity
+        if (authState.identity) {
+          try {
+            await canisterClient.init(authState.identity);
+            console.log('Canister client initialized after login');
+          } catch (error) {
+            console.warn('Failed to initialize canister client after login:', error);
+          }
+        }
       }
-      return false;
+      
+      return success;
     } catch (error) {
       console.error('Login failed:', error);
       return false;
@@ -98,30 +84,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const logout = async (): Promise<void> => {
     try {
-      setIsLoading(true);
       await authService.logout();
-      setAuthState({
-        isAuthenticated: false,
-        identity: null,
-        principal: null,
-        authClient: null,
-      });
+      setIsAuthenticated(false);
+      setPrincipal(null);
     } catch (error) {
       console.error('Logout failed:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        ...authState,
-        login,
-        logout,
-        isLoading,
-      }}
-    >
+    <AuthContext.Provider value={{ isAuthenticated, principal, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

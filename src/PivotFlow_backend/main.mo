@@ -10,12 +10,14 @@ actor PivotFlow {
     private stable var users : [(Principal, Types.User)] = [];
     private stable var nftAlerts : [(Text, Types.NFTAlert)] = [];
     private stable var cyclesAlerts : [(Text, Types.CyclesAlert)] = [];
+    private stable var gasAlerts : [(Text, Types.GasAlert)] = [];
     private stable var networkFees : [(Text, Types.NetworkFee)] = [];
     private stable var isInitialized : Bool = false;
 
     private var userStore = HashMap.HashMap<Principal, Types.User>(10, Principal.equal, Principal.hash);
     private var nftAlertStore = HashMap.HashMap<Text, Types.NFTAlert>(10, Text.equal, Text.hash);
     private var cyclesAlertStore = HashMap.HashMap<Text, Types.CyclesAlert>(10, Text.equal, Text.hash);
+    private var gasAlertStore = HashMap.HashMap<Text, Types.GasAlert>(10, Text.equal, Text.hash);
     private var networkFeeStore = HashMap.HashMap<Text, Types.NetworkFee>(10, Text.equal, Text.hash);
 
     // Initialize stores from stable memory
@@ -28,6 +30,9 @@ actor PivotFlow {
         };
         for ((k, v) in cyclesAlerts.vals()) {
             cyclesAlertStore.put(k, v);
+        };
+        for ((k, v) in gasAlerts.vals()) {
+            gasAlertStore.put(k, v);
         };
         for ((k, v) in networkFees.vals()) {
             networkFeeStore.put(k, v);
@@ -178,6 +183,35 @@ actor PivotFlow {
         );
     };
 
+    // Gas Alerts (for traditional blockchain gas fees)
+    public shared (msg) func createGasAlert(
+        blockchain : Text,
+        maxGwei : Nat,
+        priorityTier : Types.PriorityTier,
+    ) : async Types.GasAlert {
+        let id = Text.concat(Principal.toText(msg.caller), blockchain);
+        let alert : Types.GasAlert = {
+            id;
+            userId = msg.caller;
+            blockchain;
+            maxGwei;
+            priorityTier;
+            isActive = true;
+            createdAt = Time.now();
+        };
+
+        gasAlertStore.put(id, alert);
+        alert;
+    };
+
+    public shared (msg) func getUserGasAlerts() : async [Types.GasAlert] {
+        let allAlerts = Iter.toArray(gasAlertStore.entries());
+        Array.mapFilter<(Text, Types.GasAlert), Types.GasAlert>(
+            allAlerts,
+            func((_, alert)) = if (alert.userId == msg.caller) ?alert else null,
+        );
+    };
+
     // Manual initialization for testing
     public func initialize() : async Text {
         if (not isInitialized) {
@@ -194,6 +228,7 @@ actor PivotFlow {
         users := Iter.toArray(userStore.entries());
         nftAlerts := Iter.toArray(nftAlertStore.entries());
         cyclesAlerts := Iter.toArray(cyclesAlertStore.entries());
+        gasAlerts := Iter.toArray(gasAlertStore.entries());
         networkFees := Iter.toArray(networkFeeStore.entries());
     };
 
