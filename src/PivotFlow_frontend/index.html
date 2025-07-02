@@ -1,9 +1,24 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+      default-src 'self';
+      script-src 'self' 'unsafe-eval' 'unsafe-inline' https://polyfill.io;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      font-src 'self' https://fonts.gstatic.com;
+      img-src 'self' data: https: blob:;
+      connect-src 'self' http://localhost:* https://icp0.io https://*.icp0.io https://icp-api.io https://ic0.app https://*.ic0.app https://identity.ic0.app https://infragrid.v.network https://*.infragrid.v.network wss://localhost:* ws://localhost:*;
+      worker-src 'self' blob: 'unsafe-eval';
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self';
+    "
+    />
     <title>PivotFlow - Complete React Application</title>
   </head>
   <body>

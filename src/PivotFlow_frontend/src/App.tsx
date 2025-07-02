@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
 import { AppProvider, useAppContext } from './contexts/AppContext';
 import { useAuth } from './contexts/AuthContext';
@@ -8,15 +8,27 @@ import { NotificationCenter } from './components/NotificationCenter';
 import { LoginPage } from './components/LoginPage';
 import { UserProfile } from './components/UserProfile';
 import { PivotFlowLogo } from './components/PivotFlowLogo';
-import { DashboardPage } from './components/pages/DashboardPage';
-import { NftAlertsPage } from './components/pages/NftAlertsPage';
-import { BlockchainFeesPage } from './components/pages/BlockchainFeesPage';
-import { PortfolioPage } from './components/pages/PortfolioPage';
-import { SettingsPage } from './components/pages/SettingsPage';
 import { BarChart3, Bell, Zap, Eye, Settings } from 'lucide-react';
 import './advanced-effects.css';
 
-const Navigation: React.FC = () => {
+// Lazy load pages for better performance
+const DashboardPage = React.lazy(() => import('./components/pages/DashboardPage'));
+const NftAlertsPage = React.lazy(() => import('./components/pages/NftAlertsPage'));
+const BlockchainFeesPage = React.lazy(() => import('./components/pages/BlockchainFeesPage'));
+const PortfolioPage = React.lazy(() => import('./components/pages/PortfolioPage'));
+const SettingsPage = React.lazy(() => import('./components/pages/SettingsPage'));
+
+// Loading component
+const PageLoader: React.FC = () => (
+  <div className="flex items-center justify-center min-h-[400px]">
+    <div className="flex flex-col items-center space-y-4">
+      <div className="w-8 h-8 border-2 border-sky-500/30 border-t-sky-500 rounded-full animate-spin"></div>
+      <p className="text-sm text-muted-foreground">Loading...</p>
+    </div>
+  </div>
+);
+
+const Navigation: React.FC = React.memo(() => {
   const { currentView, setCurrentView } = useAppContext();
 
   const navItems = [
@@ -34,9 +46,9 @@ const Navigation: React.FC = () => {
           <button
             key={id}
             onClick={() => setCurrentView(id)}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 ${currentView === id
-              ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/25'
-              : 'bg-slate-800/50 text-slate-300 hover:text-white hover:bg-slate-700/70 border border-slate-700/50'
+            className={`btn-glow flex items-center space-x-2 px-4 py-2 rounded-xl font-medium transition-all duration-150 ${currentView === id
+              ? 'bg-gradient-to-r from-sky-500 to-sky-400 text-white border border-sky-500/50'
+              : 'glass-effect text-muted-foreground hover:text-sky-400 border-glow'
               }`}
           >
             <Icon size={18} />
@@ -46,7 +58,9 @@ const Navigation: React.FC = () => {
       </div>
     </nav>
   );
-};
+});
+
+Navigation.displayName = 'Navigation';
 
 const AppContent: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -80,12 +94,16 @@ const AppContent: React.FC = () => {
 
       <div className="min-h-screen relative z-10 flex flex-col">
         {/* Header */}
-        <header className="p-6">
+        <header className="p-6 border-b border-border/50">
           <div className="flex items-center justify-between">
             <PivotFlowLogo size="lg" />
             <div className="flex items-center gap-2">
-              <NotificationCenter />
-              <UserProfile />
+              <div className="glass-effect rounded-full p-1 border-glow">
+                <NotificationCenter />
+              </div>
+              <div className="glass-effect rounded-full p-1 border-glow">
+                <UserProfile />
+              </div>
             </div>
           </div>
         </header>
@@ -96,15 +114,26 @@ const AppContent: React.FC = () => {
         {/* Main Content */}
         <main className="flex-1 px-4 md:px-6 pb-8">
           <div className="max-w-7xl mx-auto">
-            {renderCurrentView()}
+            <Suspense fallback={<PageLoader />}>
+              {renderCurrentView()}
+            </Suspense>
           </div>
         </main>
 
         {/* Footer */}
-        <footer className="p-6 text-center border-t border-slate-700/50">
-          <p className="text-slate-500 text-sm">
-            © 2025 PivotFlow • Powered by Internet Computer Protocol
-          </p>
+        <footer className="p-6 text-center border-t border-border/50 glass-effect">
+          <div className="flex items-center justify-center space-x-2">
+            <div className="w-2 h-2 bg-sky-500 rounded-full animate-pulse"></div>
+            <p className="text-muted-foreground text-sm">
+              © 2025 <span className="text-sky-500">PivotFlow</span> • Powered by <span className="text-sky-400">Internet Computer Protocol</span>
+            </p>
+            <div className="w-2 h-2 bg-sky-400 rounded-full animate-pulse"></div>
+          </div>
+
+          {/* Simplified data flow line */}
+          <div className="relative overflow-hidden h-0.5 rounded-full bg-muted/20 mt-2 mx-auto max-w-xs">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-sky-500 to-transparent animate-data-flow"></div>
+          </div>
         </footer>
       </div>
     </>

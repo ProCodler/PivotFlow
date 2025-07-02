@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useAuth } from './AuthContext';
 import { canisterClient } from '../lib/canister';
+import { AuthService } from '../lib/auth';
 
 // Types
 export interface NFTAlert {
@@ -94,42 +95,42 @@ interface AppContextType {
   // Navigation
   currentView: string;
   setCurrentView: (view: string) => void;
-  
+
   // NFT Alerts
   nftAlerts: NFTAlert[];
   addNftAlert: (alert: Omit<NFTAlert, 'id' | 'lastChecked' | 'isActive'>) => void;
   removeNftAlert: (id: string) => void;
   updateNftAlert: (id: string, updates: Partial<NFTAlert>) => void;
-  
+
   // Gas/Cycles Alerts
   gasAlerts: GasAlert[];
   addGasAlert: (alert: Omit<GasAlert, 'id' | 'isActive'>) => void;
   removeGasAlert: (id: string) => void;
-  
+
   // Network Fees
   networkFees: NetworkFee[];
   refreshNetworkFees: () => Promise<void>;
-  
+
   // Portfolio
   walletAddresses: WalletAddress[];
   nftPortfolio: NFTItem[];
   addWalletAddress: (address: Omit<WalletAddress, 'id'>) => void;
   removeWalletAddress: (id: string) => void;
   refreshPortfolio: () => Promise<void>;
-  
+
   // Activity
   recentActivity: ActivityItem[];
   addActivity: (activity: Omit<ActivityItem, 'id'>) => void;
-  
+
   // Settings
   settings: AppSettings;
   updateSettings: (updates: Partial<AppSettings>) => void;
-  
+
   // UI State
   isLoading: boolean;
   errorMessage: string | null;
   setError: (error: string | null) => void;
-  
+
   // Canister Info (for operator)
   canisterCycles: number;
   isOperator: boolean;
@@ -225,9 +226,26 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   // Load user data when authenticated (but also work in demo mode)
   useEffect(() => {
     if (isAuthenticated && principal) {
-      // Load user-specific data from ICP canister
-      loadUserData();
-      loadNetworkFees();
+      // Add a small delay to ensure canister client is fully initialized
+      const initializeData = async () => {
+        try {
+          // Ensure canister client is ready
+          const actor = canisterClient.getActor();
+          if (!actor) {
+            console.warn('⚠️ Actor not ready yet, waiting...');
+            // Wait a bit for the AuthContext to finish initialization
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+
+          // Load user-specific data from ICP canister
+          await loadUserData();
+          await loadNetworkFees();
+        } catch (error) {
+          console.error('❌ Failed to initialize app data:', error);
+        }
+      };
+
+      initializeData();
     } else {
       // Demo mode: user not authenticated but app should still work
       console.log('Running in demo mode - user not authenticated');
@@ -236,16 +254,24 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const loadNetworkFees = async () => {
     try {
+      // Double-check actor is available
+      const actor = canisterClient.getActor();
+      if (!actor) {
+        console.warn('⚠️ Actor not available for loading network fees, using fallback data');
+        throw new Error('Actor not initialized');
+      }
+
       const fees = await canisterClient.getNetworkFees();
       const formattedFees = fees.map((fee: any) => ({
-        blockchain: fee.blockchain,
-        icon: getBlockchainIcon(fee.blockchain),
-        transactionCost: { cycles: fee.fast?.gwei || 590000, usd: fee.fast?.usd || 0.000236 },
-        chainFusionCost: { cycles: fee.standard?.gwei || 25000000, usd: fee.standard?.usd || 0.01 },
+        blockchain: fee.operationType || fee.blockchain || 'Unknown',
+        icon: getBlockchainIcon(fee.operationType || fee.blockchain || 'Unknown'),
+        transactionCost: { cycles: fee.fast?.cycles || fee.fast?.gwei || 590000, usd: fee.fast?.usd || 0.000236 },
+        chainFusionCost: { cycles: fee.standard?.cycles || fee.standard?.gwei || 25000000, usd: fee.standard?.usd || 0.01 },
       }));
       setNetworkFees(formattedFees);
+      console.log('✅ Network fees loaded from backend:', formattedFees.length);
     } catch (error) {
-      console.error('Failed to load network fees:', error);
+      console.warn('⚠️ Failed to load network fees from backend, using fallback:', error);
       // Fall back to static data on error
       setNetworkFees([
         {
@@ -293,66 +319,133 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     try {
       setIsLoading(true);
-      
+
+      // Wait for actor to be available with multiple retry attempts
+      let actor = canisterClient.getActor();
+      let retryCount = 0;
+      const maxRetries = 5;
+
+      while (!actor && retryCount < maxRetries) {
+        console.warn(`⚠️ Actor not available, attempt ${retryCount + 1}/${maxRetries}...`);
+
+        try {
+          // Wait a bit between retries
+          await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
+
+          // Try to get the identity from AuthService to reinitialize
+          const authService = AuthService.getInstance();
+          const authState = await authService.getAuthState();
+
+          if (authState.isAuthenticated && authState.identity) {
+            console.log('🔄 Reinitializing canister client...');
+            await canisterClient.init(authState.identity);
+            actor = canisterClient.getActor();
+
+            if (actor) {
+              console.log('✅ Actor successfully initialized');
+              break;
+            }
+          } else {
+            console.warn('⚠️ Auth state not ready yet...');
+          }
+        } catch (initError) {
+          console.warn(`⚠️ Retry ${retryCount + 1} failed:`, initError);
+        }
+
+        retryCount++;
+      }
+
+      if (!actor) {
+        console.warn('⚠️ Could not initialize actor after retries, continuing in demo mode');
+        // Don't throw error - just continue in demo mode
+        addActivity({
+          type: 'portfolio_update',
+          message: 'Running in demo mode - backend connection unavailable',
+          timestamp: new Date().toISOString(),
+        });
+        return; // Exit early instead of throwing
+      }
+
       // Load user info (including operator status) from backend
       try {
         const userData = await canisterClient.getUser();
-        if (userData && userData.length > 0) {
-          setIsOperator(userData[0].isOperator);
+        if (userData && typeof userData === 'object' && 'principal' in userData) {
+          setIsOperator(userData.isOperator || false);
+          console.log('✅ User data loaded:', { isOperator: userData.isOperator });
         }
       } catch (error) {
-        console.warn('Failed to load user data, continuing with defaults:', error);
+        console.warn('⚠️ Failed to load user data, continuing with defaults:', error);
       }
-      
+
       // Load NFT alerts from backend
       let nftAlertsCount = 0;
       try {
         const nftAlertsData = await canisterClient.getUserNFTAlerts();
-        const formattedNftAlerts = nftAlertsData.map((alert: any) => ({
-          id: alert.id,
-          collectionSlug: alert.collectionSlug,
-          collectionName: alert.collectionName,
-          targetPrice: alert.targetPrice,
-          currency: alert.currency,
-          alertType: Object.keys(alert.alertType)[0] as 'drop_below' | 'rise_above' | 'any_change',
-          blockchain: alert.blockchain || 'ICP',
-          cyclesLimit: alert.gasLimit ? Number(alert.gasLimit[0]) : undefined, // Map gasLimit to cyclesLimit
-          percentageChange: alert.percentageChange ? Number(alert.percentageChange[0]) : undefined,
-          currentFloorPrice: alert.currentFloorPrice,
-          lastChecked: new Date(Number(alert.lastChecked) / 1000000).toISOString(),
-          isActive: alert.isActive,
-        }));
-        setNftAlerts(formattedNftAlerts);
-        nftAlertsCount = formattedNftAlerts.length;
+        if (Array.isArray(nftAlertsData)) {
+          const formattedNftAlerts = nftAlertsData.map((alert: any) => ({
+            id: alert.id || `alert-${Date.now()}`,
+            collectionSlug: alert.collectionSlug || '',
+            collectionName: alert.collectionName || 'Unknown Collection',
+            targetPrice: alert.targetPrice || 0,
+            currency: alert.currency || 'ICP',
+            alertType: Object.keys(alert.alertType || {})[0] as 'drop_below' | 'rise_above' | 'any_change' || 'any_change',
+            blockchain: alert.blockchain || 'ICP',
+            cyclesLimit: alert.gasLimit ? Number(alert.gasLimit[0]) : undefined,
+            percentageChange: alert.percentageChange ? Number(alert.percentageChange[0]) : undefined,
+            currentFloorPrice: alert.currentFloorPrice || 0,
+            lastChecked: new Date(Number(alert.lastChecked || Date.now()) / 1000000).toISOString(),
+            isActive: alert.isActive !== undefined ? alert.isActive : true,
+          }));
+          setNftAlerts(formattedNftAlerts);
+          nftAlertsCount = formattedNftAlerts.length;
+          console.log('✅ NFT alerts loaded:', nftAlertsCount);
+        }
       } catch (error) {
-        console.warn('Failed to load NFT alerts:', error);
+        console.warn('⚠️ Failed to load NFT alerts:', error);
       }
 
       // Load gas alerts from backend
       let gasAlertsCount = 0;
       try {
         const gasAlertsData = await canisterClient.getUserGasAlerts();
-        const formattedGasAlerts = gasAlertsData.map((alert: any) => ({
-          id: alert.id,
-          blockchain: alert.blockchain,
-          maxCycles: Number(alert.maxGwei), // Map maxGwei to maxCycles for ICP
-          operationType: 'transaction' as 'transaction' | 'chain_fusion' | 'canister_call',
-          isActive: alert.isActive,
-        }));
-        setGasAlerts(formattedGasAlerts);
-        gasAlertsCount = formattedGasAlerts.length;
+        if (Array.isArray(gasAlertsData)) {
+          const formattedGasAlerts = gasAlertsData.map((alert: any) => ({
+            id: alert.id || `gas-alert-${Date.now()}`,
+            blockchain: alert.blockchain || 'ICP',
+            maxCycles: Number(alert.maxGwei || 0),
+            operationType: 'transaction' as 'transaction' | 'chain_fusion' | 'canister_call',
+            isActive: alert.isActive !== undefined ? alert.isActive : true,
+          }));
+          setGasAlerts(formattedGasAlerts);
+          gasAlertsCount = formattedGasAlerts.length;
+          console.log('✅ Gas alerts loaded:', gasAlertsCount);
+        }
       } catch (error) {
-        console.warn('Failed to load gas alerts:', error);
+        console.warn('⚠️ Failed to load gas alerts:', error);
       }
-      
+
+      // Only add activity if we successfully loaded some data
+      if (nftAlertsCount > 0 || gasAlertsCount > 0) {
+        addActivity({
+          type: 'portfolio_update',
+          message: `Welcome back! Loaded ${nftAlertsCount} NFT alerts and ${gasAlertsCount} cycles alerts`,
+          timestamp: new Date().toISOString(),
+        });
+      } else {
+        addActivity({
+          type: 'portfolio_update',
+          message: 'Connected to PivotFlow backend successfully',
+          timestamp: new Date().toISOString(),
+        });
+      }
+    } catch (error) {
+      console.error('❌ Failed to load user data:', error);
+      // Don't set error here - let the app continue in demo mode
       addActivity({
         type: 'portfolio_update',
-        message: `Welcome back! Loaded ${nftAlertsCount} NFT alerts and ${gasAlertsCount} cycles alerts`,
+        message: 'Running in demo mode - backend connection unavailable',
         timestamp: new Date().toISOString(),
       });
-    } catch (error) {
-      console.error('Failed to load user data:', error);
-      setError('Failed to load user data');
     } finally {
       setIsLoading(false);
     }
@@ -382,12 +475,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     console.log('addNftAlert called with:', alert);
     try {
       setIsLoading(true);
-      
+
       if (isAuthenticated && principal) {
         // Try to create alert via backend
         try {
           const alertType = { [alert.alertType]: null } as any;
-          
+
           const newAlert = await canisterClient.createNFTAlert(
             alert.collectionSlug,
             alert.collectionName,
@@ -395,7 +488,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             alert.targetPrice,
             alert.currency
           );
-          
+
           const formattedAlert: NFTAlert = {
             id: newAlert.id,
             collectionSlug: newAlert.collectionSlug,
@@ -410,7 +503,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             lastChecked: new Date(Number(newAlert.lastChecked) / 1000000).toISOString(),
             isActive: newAlert.isActive,
           };
-          
+
           setNftAlerts(prev => [...prev, formattedAlert]);
         } catch (backendError) {
           console.warn('Backend call failed, using local storage:', backendError);
@@ -436,13 +529,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         };
         setNftAlerts(prev => [...prev, localAlert]);
       }
-      
+
       addActivity({
         type: 'nft_alert',
         message: `New NFT alert created for ${alert.collectionName}`,
         timestamp: new Date().toISOString(),
       });
-      
+
       console.log('NFT alert created successfully');
     } catch (error) {
       console.error('Failed to add NFT alert:', error);
@@ -456,7 +549,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     try {
       // TODO: Replace with actual ICP canister call
       // await canisterActor.removeNftAlert(principal, id);
-      
+
       setNftAlerts(prev => prev.filter(alert => alert.id !== id));
     } catch (error) {
       console.error('Failed to remove NFT alert:', error);
@@ -468,8 +561,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     try {
       // TODO: Replace with actual ICP canister call
       // await canisterActor.updateNftAlert(principal, id, updates);
-      
-      setNftAlerts(prev => prev.map(alert => 
+
+      setNftAlerts(prev => prev.map(alert =>
         alert.id === id ? { ...alert, ...updates } : alert
       ));
     } catch (error) {
@@ -481,18 +574,18 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const addGasAlert = async (alert: Omit<GasAlert, 'id' | 'isActive'>) => {
     try {
       setIsLoading(true);
-      
+
       if (isAuthenticated && principal) {
         // Try to create alert via backend
         try {
           const priorityTier = { [alert.operationType]: null } as any;
-          
+
           const newAlert = await canisterClient.createGasAlert(
             alert.blockchain,
             alert.maxCycles,
             priorityTier
           );
-          
+
           const formattedAlert: GasAlert = {
             id: newAlert.id,
             blockchain: newAlert.blockchain,
@@ -500,7 +593,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             operationType: alert.operationType,
             isActive: newAlert.isActive,
           };
-          
+
           setGasAlerts(prev => [...prev, formattedAlert]);
         } catch (backendError) {
           console.warn('Backend call failed, using local storage:', backendError);
@@ -521,7 +614,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         };
         setGasAlerts(prev => [...prev, localAlert]);
       }
-      
+
       addActivity({
         type: 'cycles_alert',
         message: `New cycles alert created for ${alert.blockchain}`,
@@ -539,7 +632,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     try {
       // TODO: Replace with actual ICP canister call
       // await canisterActor.removeGasAlert(principal, id);
-      
+
       setGasAlerts(prev => prev.filter(alert => alert.id !== id));
     } catch (error) {
       console.error('Failed to remove cycles alert:', error);
@@ -568,7 +661,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     try {
       // TODO: Replace with actual ICP canister call
       // await canisterActor.addWalletAddress(principal, address);
-      
+
       const newAddress: WalletAddress = {
         ...address,
         id: Date.now().toString(),
@@ -584,7 +677,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     try {
       // TODO: Replace with actual ICP canister call
       // await canisterActor.removeWalletAddress(principal, id);
-      
+
       setWalletAddresses(prev => prev.filter(addr => addr.id !== id));
     } catch (error) {
       console.error('Failed to remove wallet address:', error);
@@ -598,23 +691,23 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     try {
       // Simulate portfolio refresh with immediate feedback
       await new Promise(resolve => setTimeout(resolve, 800));
-      
+
       const walletCount = walletAddresses.length;
       let message = 'Portfolio refresh completed';
-      
+
       if (walletCount === 0) {
         message = 'No wallets connected. Add wallet addresses to view NFT portfolio.';
       } else {
         message = `Portfolio refresh completed for ${walletCount} connected wallet${walletCount > 1 ? 's' : ''}`;
       }
-      
+
       addActivity({
         type: 'portfolio_update',
         message,
         timestamp: new Date().toISOString(),
         cyclesCost: 1000000, // Show cycles cost
       });
-      
+
       console.log('Portfolio refresh completed');
     } catch (error) {
       console.error('Portfolio refresh error:', error);
@@ -636,7 +729,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     try {
       // TODO: Replace with actual ICP canister call
       // await canisterActor.updateSettings(principal, updates);
-      
+
       setSettings(prev => ({
         ...prev,
         ...updates,

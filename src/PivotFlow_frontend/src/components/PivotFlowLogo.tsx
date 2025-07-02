@@ -28,7 +28,7 @@ export const PivotFlowLogo: React.FC<PivotFlowLogoProps> = ({
     if (variant === 'text-only') {
         return (
             <div className={`flex items-center ${className}`}>
-                <span className={`font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent ${textSizes[size]}`}>
+                <span className={`font-bold bg-gradient-to-r from-sky-400 via-sky-500 to-blue-400 bg-clip-text text-transparent ${textSizes[size]}`}>
                     PivotFlow
                 </span>
             </div>
@@ -40,10 +40,10 @@ export const PivotFlowLogo: React.FC<PivotFlowLogoProps> = ({
             {/* Main logo container */}
             <div className="relative flex items-center justify-center">
                 {/* Outer ring - representing blockchain network */}
-                <div className="absolute w-full h-full rounded-full border-2 border-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 animate-spin-slow opacity-60"></div>
+                <div className="absolute w-full h-full rounded-full border-2 border-sky-400 animate-spin-slow opacity-60"></div>
 
                 {/* Middle ring - representing data flow */}
-                <div className="absolute w-4/5 h-4/5 rounded-full border border-purple-400/50 animate-pulse"></div>
+                <div className="absolute w-4/5 h-4/5 rounded-full border border-sky-500/50 animate-pulse"></div>
 
                 {/* Inner core - representing the pivot point */}
                 <div className="relative z-10 flex items-center justify-center">
@@ -55,9 +55,9 @@ export const PivotFlowLogo: React.FC<PivotFlowLogoProps> = ({
                         {/* Gradient definitions */}
                         <defs>
                             <linearGradient id="pivotGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="#06b6d4" />
-                                <stop offset="50%" stopColor="#8b5cf6" />
-                                <stop offset="100%" stopColor="#ec4899" />
+                                <stop offset="0%" stopColor="#0ea5e9" />
+                                <stop offset="50%" stopColor="#38bdf8" />
+                                <stop offset="100%" stopColor="#60a5fa" />
                             </linearGradient>
                             <filter id="glow">
                                 <feGaussianBlur stdDeviation="3" result="coloredBlur" />
@@ -107,11 +107,11 @@ export const PivotFlowLogo: React.FC<PivotFlowLogoProps> = ({
 
                 {/* Floating particles around the logo */}
                 <div className="absolute inset-0">
-                    <div className="absolute w-1 h-1 bg-cyan-400 rounded-full animate-ping"
+                    <div className="absolute w-1 h-1 bg-sky-400 rounded-full animate-ping"
                         style={{ left: '80%', top: '20%', animationDelay: '0s' }}></div>
-                    <div className="absolute w-1 h-1 bg-purple-400 rounded-full animate-ping"
+                    <div className="absolute w-1 h-1 bg-sky-500 rounded-full animate-ping"
                         style={{ left: '20%', top: '80%', animationDelay: '1s' }}></div>
-                    <div className="absolute w-1 h-1 bg-pink-400 rounded-full animate-ping"
+                    <div className="absolute w-1 h-1 bg-blue-400 rounded-full animate-ping"
                         style={{ left: '90%', top: '70%', animationDelay: '2s' }}></div>
                 </div>
             </div>
@@ -134,7 +134,7 @@ export const PivotFlowLogo: React.FC<PivotFlowLogoProps> = ({
                 <LogoIcon />
             </div>
             <div className="flex flex-col">
-                <span className={`font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent ${textSizes[size]}`}>
+                <span className={`font-bold bg-gradient-to-r from-sky-400 via-sky-500 to-blue-400 bg-clip-text text-transparent ${textSizes[size]}`}>
                     PivotFlow
                 </span>
                 <span className="text-xs text-slate-400 tracking-wider uppercase">

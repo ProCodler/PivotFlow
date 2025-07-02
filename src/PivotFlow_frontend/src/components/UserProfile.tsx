@@ -46,7 +46,7 @@ export const UserProfile: React.FC = () => {
       </button>
 
       {showDropdown && (
-        <div className="absolute right-0 top-full mt-2 w-80 bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-sm border border-slate-700/50 rounded-2xl shadow-2xl z-50">
+        <div className="absolute right-0 top-full mt-2 w-80 bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-sm border border-slate-700/50 rounded-2xl shadow-2xl z-40">
           <div className="p-4">
             <div className="flex items-center space-x-3 mb-4">
               <div className="p-2 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-xl">
